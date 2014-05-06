@@ -1,0 +1,16 @@
+source 'https://rubygems.org'
+
+gemspec
+gem 'rake'
+
+group :development, :test do
+  gem 'cucumber'
+  gem 'getty-cucumber_targets', path: 'vendor/getty/cucumber_targets'
+  gem 'rspec'
+  gem 'rspec-spies'
+  gem 'colored'
+  gem 'json'
+end
+
+
+

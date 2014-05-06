@@ -1,0 +1,17 @@
+#!/usr/bin/env rake
+
+#use bundler to resolve dependencies
+require 'bundler'
+Bundler.require(:default, :development, :test)
+
+#import standard bundler gem tasks
+require "bundler/gem_tasks"
+
+#import .rake files from lib/tasks
+Dir["#{File.expand_path("../lib/tasks/*.rake", __FILE__)}"].each do |rake_file|
+  load rake_file
+end
+
+task :tests => 'cucumber:all'
+
+task :default => :build
