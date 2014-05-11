@@ -11,7 +11,7 @@ class Context::AuthenticateUser
         authorized_user.token = token
 
         # Make sure account username matches the authorized username
-        authorized_user.check_username(username)
+        authorized_user.override_username(username)
       else
         raise Esp::UnknownUserError.new("User #{username} has not been added to the database.")
       end

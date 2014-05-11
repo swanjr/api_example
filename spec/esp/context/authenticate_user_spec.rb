@@ -36,16 +36,9 @@ describe Context::AuthenticateUser do
           expect(authorized_user.token).to_not be_nil
         end
 
-        context 'and the authenticated username does not match the account username' do
-          it 'override the stored username with the authenticated one' do
-            authorized_user = described_class.authenticate('new_user', 'password')
-
-            expect(authorized_user.username).to eq('new_user')
-          end
-
-          it 'save the username' do
-            expect(user).to receive(:save!)
-
+        context 'and the authenticated username and database username to not match' do
+          it 'override the database username' do
+            expect(user).to receive(:override_username).with('new_user')
             described_class.authenticate('new_user', 'password')
           end
         end
