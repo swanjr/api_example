@@ -1,4 +1,4 @@
 --color
 --drb
 --format documentation
---tag ~integration
+-I app

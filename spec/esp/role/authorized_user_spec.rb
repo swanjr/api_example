@@ -1,11 +1,14 @@
-require 'spec_helper'
+require 'lite_spec_helper'
+
+require 'esp/role/authorized_user'
+require 'models/user'
 
 describe Role::AuthorizedUser do
-  let(:authorized_user) { described_class.new(:username => 'original_username', :account_id => 1) }
+  let(:authorized_user) { described_class.new(User.new(:username => 'original_username')) }
 
   describe '#override_user' do
     before(:each) do
-      allow(authorized_user).to receive(:save)
+      allow(authorized_user).to receive(:save!)
     end
 
     it 'changes the username if it does not match the authorized_username parameter' do

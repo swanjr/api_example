@@ -1,4 +1,6 @@
-require 'spec_helper'
+require 'lite_spec_helper'
+
+require 'esp/context/authenticate_user'
 
 describe Context::AuthenticateUser do
 
@@ -6,13 +8,13 @@ describe Context::AuthenticateUser do
     let(:token_mock) { instance_double('Security::GettyToken') }
 
     context 'with valid credentials' do
-      let(:user) { Role::AuthorizedUser.new(FactoryGirl.attributes_for(:user)) }
+      let(:user) { FactoryGirl.build(:user) }
 
       before(:each) do
         allow(token_mock).to receive(:account_id).and_return(user.account_id)
 
         allow(Security::GettyToken).to receive(:create).and_return(token_mock)
-        allow(Role::AuthorizedUser).to receive(:find_by).and_return(user)
+        allow(User).to receive(:find_by).and_return(user)
       end
 
       it 'creates a valid token' do
@@ -46,7 +48,7 @@ describe Context::AuthenticateUser do
 
       context 'when the user does not exist' do
         it 'raise an AuthorizationError' do
-          allow(Role::AuthorizedUser).to receive(:find_by).and_return(nil)
+          allow(User).to receive(:find_by).and_return(nil)
 
           expect{ described_class.authenticate(user.username, 'password') }.to raise_error(Esp::UnknownUserError)
         end
