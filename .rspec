@@ -2,3 +2,4 @@
 --drb
 --format documentation
 -I app
+-P "spec/{controllers,esp,models,queries,validators}/**/*_spec.rb, /*_spec.rb, /api/**/*_spec.rb"

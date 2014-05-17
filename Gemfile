@@ -25,8 +25,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'minitest'
-  gem 'shoulda'
+  gem 'shoulda', :require => false
   gem 'faker'
   gem 'factory_girl_rails'
   gem 'psych', '>= 2.0.5'

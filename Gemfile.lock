@@ -192,7 +192,6 @@ DEPENDENCIES
   ffprober!
   fog
   getty-instrumentation!
-  minitest
   mysql2
   pry-rails
   psych (>= 2.0.5)

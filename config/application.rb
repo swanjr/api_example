@@ -32,12 +32,10 @@ module EspAPI
     #config.autoload_paths += %W(#{config.root}/app/commands)
     #config.autoload_paths += %W(#{config.root}/app/queries)
     #config.autoload_paths += %W(#{config.root}/app/serializers)
-
-    config.autoload_paths += %W(#{config.root}/app)
     config.autoload_paths += %W(#{config.root}/app/controllers/errors)
     config.autoload_paths += %W(#{config.root}/app/esp/**)
     config.autoload_paths += %W(#{config.root}/lib)
-    
+
     # Manually loaded to avoid naming constraints
     require_dependency "#{config.root}/app/esp/errors"
 
@@ -48,12 +46,12 @@ module EspAPI
     config.middleware.delete "ActionDispatch::BestStandardsSupport"
     config.middleware.delete "Rack::MethodOverride"
 
-
     # Configure exceptions app to handle all uncaught errors
     config.exceptions_app = lambda do |env|
       ExceptionRenderer.new.call(env)
     end
 
+    # Default generators
     config.generators do |g|
       g.test_framework :rspec, fixture: true
       g.fixture_replacement :factory_girl, dir: 'spec/factories'
