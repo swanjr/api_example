@@ -13,25 +13,16 @@
 
 ActiveRecord::Schema.define(version: 20140313024112) do
 
-  create_table "associated_accounts", force: true do |t|
-    t.integer  "user_id"
-    t.string   "type"
-    t.string   "username"
-    t.string   "account_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "associated_accounts", ["user_id"], name: "index_associated_accounts_on_user_id", using: :btree
-
   create_table "users", force: true do |t|
     t.string   "username"
     t.string   "account_id"
+    t.string   "istock_account_id"
     t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "users", ["account_id"], name: "index_users_on_account_id", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
 
 end
