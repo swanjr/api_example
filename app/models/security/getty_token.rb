@@ -20,7 +20,7 @@ module Security
     def initialize(key, duration)
       @key = key
       @duration = duration
-      @account_id = parse_user_id(key) if key.present?
+      @account_id = parse_user_id(key)
     end
 
     private
@@ -53,14 +53,13 @@ module Security
       }.to_json
     end
 
-    def parse_user_id(token)
-      if token.present?
-        parts = token.split('|')
-        decoded_token =  Base64.decode64(parts[1])
-        split_data = decoded_token.split("\n")
-        return split_data[2]
-      end
-      nil
+    def parse_user_id(token_key)
+      nil unless token_key.present?
+
+      parts = token_key.split('|')
+      decoded_token =  Base64.decode64(parts[1])
+      split_data = decoded_token.split("\n")
+      split_data[2]
     end
 
   end
