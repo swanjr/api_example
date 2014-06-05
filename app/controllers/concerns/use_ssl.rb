@@ -6,6 +6,8 @@ module UseSsl
   private
 
   def use_ssl?
-    !(Rails.env.development? || Rails.env.test? || NO_SSL_CONTROLLERS.include(params[:controller]))
+    !(Rails.env.development? ||
+      Rails.env.test? ||
+      Rails.application.config.controllers_without_ssl.include(params[:controller]))
   end
 end

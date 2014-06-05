@@ -1,22 +1,14 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # Third party endpoints
-  CREATE_SESSION_ENDPOINT = "https://gibson.candidate-gettyimages.com/public/json/1.0/CreateSession"
-  RENEW_SESSION_ENDPOINT = "https://gibson.candidate-gettyimages.com/public/json/1.0/RenewSession"
-  EVENT_ENDPOINT = "http://eventsvc.test.gettyimages.com/Event/json/2.0"
-  DSA_ENDPOINT = "http://dsa-candidate.gettyimages.io/assets"
-
-  # ESP system id and password
-  AUTH_SYSTEM_ID = "1520"
-  AUTH_SYSTEM_PASSWORD = "systemPassword12345678=="
-
   # ESP enterprise id prefix
-  ENTERPRISE_ID_PREFIX = "ESPID:TEST:"
+  config.enterprise_id_prefix = "ESPID:TEST:"
 
-  # STS public keys
-  STS_PUBLIC_KEY = 'rmxWUDxTISNTbVte2csm5alfXNEoFQo9NcdKriIVmk11QhPbNgIvTuQg2o+7MleCLcydC7PMpxIwTd7ZNiQtbivd2N\/pAsLjjhKNDNo9GFd4EhWK6T1Lq3Fm+mWYY2sbtNc4bPm158U9vVDKEeHLY4y01KoHZ7YTzH2tzA4XwEU='
-  VITRIA_STS_PUBLIC_KEY = 'rmxWUDxTISNTbVte2csm5alfXNEoFQo9NcdKriIVmk11QhPbNgIvTuQg2o+7MleCLcydC7PMpxIwTd7ZNiQtbivd2N\/pAsLjjhKNDNo9GFd4EhWK6T1Lq3Fm+mWYY2sbtNc4bPm158U9vVDKEeHLY4y01KoHZ7YTzH2tzA4XwEU='
+  # Third party endpoints
+  config.endpoints[:create_session] = "https://gibson.candidate-gettyimages.com/public/json/1.0/CreateSession"
+  config.endpoints[:renew_session] = "https://gibson.candidate-gettyimages.com/public/json/1.0/RenewSession"
+  config.endpoints[:event] = "http://eventsvc.test.gettyimages.com/Event/json/2.0"
+  config.endpoints[:dsa] = "http://dsa-candidate.gettyimages.io/assets"
 
   # Override Ffprober's default timeout of 30 seconds only in development/test
   Ffprober::Parser.timeout = 600

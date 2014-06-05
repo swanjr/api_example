@@ -1,4 +1,5 @@
 class API::V1::AuthorizedUsersController < API::BaseController
+  skip_before_action :restrict_access, only: [:create]
 
   def create
     authorized_user = Context::AuthenticateUser.authenticate(username_param, password_param)

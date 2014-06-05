@@ -43,11 +43,5 @@ package.tar.gz
 #Ignore simplecov coverage folder
 /coverage
 
-#Ignore generated config file for esp
-config/esp_config.yaml
-
-# Ignore application configuration
-/config/application.yml
-
 # Ignore database backups
 /backups

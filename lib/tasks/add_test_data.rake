@@ -75,7 +75,7 @@ namespace :test do
        new_user = User.create(:username => user[0],
                               :account_id => user[1])
 
-       #unless new_user.new_record?
+       unless new_user.new_record?
 
          #user = User.find_by(:username => new_user.username)
 
@@ -86,7 +86,7 @@ namespace :test do
          #else
            #user.add_role(:uploader)
          #end
-       #end
+       end
 
      end
     end

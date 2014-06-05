@@ -1,12 +1,13 @@
 require 'int_spec_helper'
 
 describe "AuthorizedUsers API V1" do
+  let(:getty_token_config) { Security::GettyToken.config }
 
   describe "POST /api/v1/authorized_user" do
     context "when sent valid credentials" do
       let(:valid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9PQo=|3' }
       let(:account_id) { '314' }
-      let(:duration) { 15 }
+      let(:expires_at) { DateTime.new(2030, 1, 1).to_s }
 
       let(:user) { FactoryGirl.create(:user, :account_id => account_id) }
 
@@ -16,8 +17,8 @@ describe "AuthorizedUsers API V1" do
             Token: ""
           },
           CreateSessionRequestBody: {
-            SystemId:       AUTH_SYSTEM_ID,
-            SystemPassword: AUTH_SYSTEM_PASSWORD,
+            SystemId:       getty_token_config.auth_system_id,
+            SystemPassword: getty_token_config.auth_system_password,
             UserName:       user.username,
             UserPassword:   'password'
           }
@@ -26,10 +27,10 @@ describe "AuthorizedUsers API V1" do
         response_mock = { "ResponseHeader" => { "Status" => "success" },
                       "CreateSessionResult" => {
                         "Token" => valid_token,
-                        "TokenDurationMinutes" => duration }
+                        "TokenDurationMinutes" => "30" }
         }.to_json
 
-        stub_request(:post, CREATE_SESSION_ENDPOINT).
+        stub_request(:post, getty_token_config.endpoint).
           with(:body => request_mock, :headers => {'Content-Type' => 'application/json'}).
           to_return(:status => 200, :body => response_mock)
 
@@ -48,8 +49,8 @@ describe "AuthorizedUsers API V1" do
         expect(json['token']).to eq(valid_token)
       end
 
-      it "return the token's duration" do
-        expect(json['duration']).to eq(duration)
+      it "return the token's expiration" do
+        expect(json['expires_at']).to eq(expires_at)
       end
     end
 
@@ -60,8 +61,8 @@ describe "AuthorizedUsers API V1" do
             Token: ""
           },
           CreateSessionRequestBody: {
-            SystemId:       AUTH_SYSTEM_ID,
-            SystemPassword: AUTH_SYSTEM_PASSWORD,
+            SystemId:       getty_token_config.auth_system_id,
+            SystemPassword: getty_token_config.auth_system_password ,
             UserName:       'johndoe',
             UserPassword:   'bad_password'
           }
@@ -79,7 +80,7 @@ describe "AuthorizedUsers API V1" do
           }
         }.to_json
 
-        stub_request(:post, CREATE_SESSION_ENDPOINT).
+        stub_request(:post, getty_token_config.endpoint).
           with(:body => request_mock, :headers => {'Content-Type' => 'application/json'}).
           to_return(:status => 200, :body => response_mock)
 
@@ -95,7 +96,7 @@ describe "AuthorizedUsers API V1" do
       end
 
       it "return invalid credentials error code" do
-        expect(json['code']).to eq('invalid_credentials')
+        expect(json['code']).to eq('authentication_failure')
       end
     end
   end

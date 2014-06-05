@@ -1,11 +1,11 @@
 class AuthorizedUserSerializer < ActiveModel::Serializer
-  attributes :id, :account_id, :username, :token, :duration
+  attributes :id, :account_id, :username, :token, :expires_at
 
   def token
-    object.token.key if object.token.present?
+    object.token.value if object.token
   end
 
-  def duration
-    object.token.duration if object.token.present?
+  def expires_at
+    object.token.expires_at if object.token
   end
 end

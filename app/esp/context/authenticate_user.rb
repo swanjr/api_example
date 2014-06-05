@@ -1,13 +1,25 @@
 module Context
   class AuthenticateUser
 
+    # Returns nil if authentication fails
     def self.authenticate(username, password)
-      AuthenticateUser.new(username, password).authorized_user
+      token = Security::GettyToken.create(username, password)
+      authorized_user = AuthenticateUser.new(token).authorized_user
+
+      authorized_user.sync_username(username) if authorized_user
+      authorized_user
     end
 
-    def initialize(username, password)
-      @username = username
-      @token = Security::GettyToken.create(username, password)
+    # Returns nil if authentication fails
+    def self.authenticate_token(token)
+      return nil if token.nil?
+
+      token = Security::GettyToken.new(token)
+      AuthenticateUser.new(token).authorized_user if token.valid?
+    end
+
+    def initialize(token)
+      @token = token
     end
 
     def authorized_user
@@ -21,15 +33,10 @@ module Context
       authorized_user = AuthorizedUser.find_by_account_id(@token.account_id)
 
       if authorized_user
-        #Set token and sync username
-        if authorized_user
-          authorized_user.token = @token
-          authorized_user.sync_username(@username)
-        end
+        authorized_user.token = @token
       else
         raise Esp::UnknownUserError.new("User #{@username} has not been added to the database.")
       end
-
       authorized_user
     end
 

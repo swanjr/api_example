@@ -1,5 +1,6 @@
 require 'unit_spec_helper'
 
+require 'utils/configurable'
 require 'models/security/base_token'
 require 'models/security/getty_token'
 require 'models/user'

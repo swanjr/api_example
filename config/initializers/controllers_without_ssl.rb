@@ -1,3 +1,3 @@
-NO_SSL_CHECK_CONTROLLERS = [
+Rails.application.config.controllers_without_ssl = [
   'api/v1/health_check'
 ]

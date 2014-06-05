@@ -1,9 +1,9 @@
 module Esp
 
-  class Error < StandardError
+  class BaseError < StandardError
   end
 
-  class UnknownUserError < Error
+  class UnknownUserError < BaseError
   end
 
 end

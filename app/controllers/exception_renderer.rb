@@ -1,4 +1,5 @@
 class ExceptionRenderer
+  include Configurable
 
   def call(env)
     exception = env["action_dispatch.exception"]
@@ -14,6 +15,7 @@ class ExceptionRenderer
 
   def map_exception(exception, env)
     mapped_exception = lookup_mapping(exception)
+
     if mapped_exception.nil?
       # Check if rails can normally handle this exception
       status = ActionDispatch::ExceptionWrapper.new(env, exception).status_code
@@ -24,11 +26,10 @@ class ExceptionRenderer
         mapped_exception = BaseError.new("Internal server error")
       end
     end
-
     mapped_exception
   end
 
   def lookup_mapping(exception)
-    ERROR_MAPPINGS[exception.class.to_s]
+    self.class.config.error_mappings[exception.class.to_s]
   end
 end

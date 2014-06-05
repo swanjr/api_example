@@ -1,14 +1,20 @@
 require 'unit_spec_helper'
 
 require 'action_dispatch'
+
+require 'utils/configurable'
 require 'controllers/errors/base_error'
 require 'controllers/exception_renderer'
 
-ERROR_MAPPINGS = {}
-
 describe ExceptionRenderer do
+  before(:all) do
+    described_class.configure do |config|
+      config.error_mappings = {'StandardError' => BaseError.new('A custom message', 111, :custom_code, 'now')}
+    end
+  end
+
   before(:each) do
-    allow(Time).to receive(:now).and_return('now')
+    allow(DateTime).to receive(:now).and_return('now')
   end
 
   let(:exception_renderer) { ExceptionRenderer.new }
@@ -24,14 +30,12 @@ describe ExceptionRenderer do
   end
 
   it "renders the mapped API exception for the thrown error" do
-    ERROR_MAPPINGS['StandardError'] = BaseError.new('A custom message')
-
     env = {'action_dispatch.exception' => StandardError.new("Some error")}
     result = exception_renderer.call(env)
 
-    expect(result[0]).to eq(500)
+    expect(result[0]).to eq(111)
     expect(result[2]).to eq(
-      ["{\"message\":\"A custom message\",\"occurred_at\":\"now\",\"http_status_code\":500,\"code\":\"internal_server_error\"}"])
+      ["{\"message\":\"A custom message\",\"occurred_at\":\"now\",\"http_status_code\":111,\"code\":\"custom_code\"}"])
   end
 
   context "when no mapping is found" do
