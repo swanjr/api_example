@@ -7,13 +7,13 @@ class API::V1::HealthCheckController < API::BaseController
 
   private
 
-  #def success
-    #{ :status => 'ok' }
-  #end
+  def success
+    { :status => 'ok' }
+  end
 
-  #def error(e)
-    #{ :status => 'error', :error => e.message }
-  #end
+  def error(e)
+    { :status => 'error', :message => e.message }
+  end
 
   def run_diagnostics
     results = {}
@@ -27,14 +27,14 @@ class API::V1::HealthCheckController < API::BaseController
       #results[:rds] = error(e)
     #end
 
-    ## EWS CreateSession
-    #begin
-      #Rails.logger.info("Checking EWS CreateSession")
-      #@token = EventService.send(:get_token)
-      #results[:ews_create_session] = success
-    #rescue Timeout::Error, Exception => e
-      #results[:ews_create_session] = error(e)
-    #end
+    # STS Check
+    begin
+      Rails.logger.info("Checking STS")
+      Security::GettyToken.create('matt@punchstock.com', 'Ph0t0$', request.remote_ip)
+      results[:sts] = success
+    rescue Security::TokenError => e
+      results[:sts] = error(e)
+    end
 
     ## EWS Event
     #begin

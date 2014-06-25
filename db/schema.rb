@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140313024112) do
+ActiveRecord::Schema.define(version: 20140518161748) do
+
+  create_table "submission_batches", force: true do |t|
+    t.integer  "owner_id"
+    t.string   "name"
+    t.string   "media_type"
+    t.string   "asset_family"
+    t.boolean  "istock"
+    t.string   "status"
+    t.datetime "last_contribution_submitted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "username"

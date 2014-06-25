@@ -12,6 +12,13 @@ class ValidationError < BaseError
     @messages << FieldError.new(resource, field, message)
   end
 
+  def add_model_messages(model)
+    resource = model.class.to_s
+    model.errors.each do |field, message|
+      @messages << FieldError.new(resource, field, message)
+    end
+  end
+
   class FieldError
     attr_accessor :resource, :field, :message
 

@@ -2,8 +2,8 @@ module Context
   class AuthenticateUser
 
     # Returns nil if authentication fails
-    def self.authenticate(username, password)
-      token = Security::GettyToken.create(username, password)
+    def self.authenticate(username, password, client_ip)
+      token = Security::GettyToken.create(username, password, client_ip)
       authorized_user = AuthenticateUser.new(token).authorized_user
 
       authorized_user.sync_username(username) if authorized_user
@@ -11,11 +11,15 @@ module Context
     end
 
     # Returns nil if authentication fails
-    def self.authenticate_token(token)
-      return nil if token.nil?
+    def self.authenticate_token(token_value)
+      return nil unless token_value
 
-      token = Security::GettyToken.new(token)
-      AuthenticateUser.new(token).authorized_user if token.valid?
+      token = Security::GettyToken.new(token_value)
+      if(!token.valid? && token.expired?)
+        token = Security::GettyToken.renew(token.value)
+        return nil unless token
+      end
+      AuthenticateUser.new(token).authorized_user
     end
 
     def initialize(token)
@@ -35,7 +39,7 @@ module Context
       if authorized_user
         authorized_user.token = @token
       else
-        raise Esp::UnknownUserError.new("User #{@username} has not been added to the database.")
+        raise Esp::UnknownUserError.new("User with account id #{@token.account_id} has not been added to the database.")
       end
       authorized_user
     end

@@ -1,4 +1,4 @@
-require 'int_spec_helper'
+require 'rails_helper'
 
 describe "AuthorizedUsers API V1" do
   let(:getty_token_config) { Security::GettyToken.config }
@@ -13,43 +13,43 @@ describe "AuthorizedUsers API V1" do
 
       before(:each) do
         request_mock = {
-          RequestHeader: {
-            Token: ""
+          'RequestHeader' => {
+            'Token' => '',
+            'CoordinationId' => ''
           },
-          CreateSessionRequestBody: {
-            SystemId:       getty_token_config.auth_system_id,
-            SystemPassword: getty_token_config.auth_system_password,
-            UserName:       user.username,
-            UserPassword:   'password'
+          'GetUserTokenRequestBody' => {
+            'ClientIp' => '127.0.0.1',
+            'EnhancedAuthenticationMode' => 0,
+            'SystemId' => getty_token_config.auth_system_id,
+            'SystemPassword' => getty_token_config.auth_system_password,
+            'UserName' => user.username,
+            'UserPassword' => 'password'
           }
         }.to_json
 
-        response_mock = { "ResponseHeader" => { "Status" => "success" },
-                      "CreateSessionResult" => {
-                        "Token" => valid_token,
-                        "TokenDurationMinutes" => "30" }
-        }.to_json
-
-        stub_request(:post, getty_token_config.endpoint).
+        response_mock = { 'ResponseHeader' => { 'Status' => 'success' },
+                    'GetUserTokenResponseBody' => {
+                      'NonSecureToken' => {
+                        'Token' => valid_token,
+                      }
+                    }
+                  }.to_json
+        stub_request(:post, getty_token_config.get_user_token_endpoint).
           with(:body => request_mock, :headers => {'Content-Type' => 'application/json'}).
           to_return(:status => 200, :body => response_mock)
 
         post '/api/v1/authorized_users', {username: user.username, password: 'password'}
       end
 
-      it "return status 201" do
+      it "returns status 201" do
         expect(response.status).to eq(201)
       end
 
-      it "return user's username" do
+      it "returns user with token" do
+        expect(json['id']).to eq(user.id)
+        expect(json['account_id']).to eq(user.account_id)
         expect(json['username']).to eq(user.username)
-      end
-
-      it "return user's token" do
         expect(json['token']).to eq(valid_token)
-      end
-
-      it "return the token's expiration" do
         expect(json['expires_at']).to eq(expires_at)
       end
     end
@@ -57,14 +57,17 @@ describe "AuthorizedUsers API V1" do
     context "when sent invalid credentials" do
       before(:each) do
         request_mock = {
-          RequestHeader: {
-            Token: ""
+          'RequestHeader' => {
+            'Token' => '',
+            'CoordinationId' => ''
           },
-          CreateSessionRequestBody: {
-            SystemId:       getty_token_config.auth_system_id,
-            SystemPassword: getty_token_config.auth_system_password ,
-            UserName:       'johndoe',
-            UserPassword:   'bad_password'
+          'GetUserTokenRequestBody' => {
+            'ClientIp' => '127.0.0.1',
+            'EnhancedAuthenticationMode' => 0,
+            'SystemId' => getty_token_config.auth_system_id,
+            'SystemPassword' => getty_token_config.auth_system_password,
+            'UserName' => 'johndoe',
+            'UserPassword' => 'bad_password'
           }
         }.to_json
 
@@ -80,22 +83,22 @@ describe "AuthorizedUsers API V1" do
           }
         }.to_json
 
-        stub_request(:post, getty_token_config.endpoint).
+        stub_request(:post, getty_token_config.get_user_token_endpoint).
           with(:body => request_mock, :headers => {'Content-Type' => 'application/json'}).
           to_return(:status => 200, :body => response_mock)
 
         post '/api/v1/authorized_users', {username: 'johndoe', password: 'bad_password'}
       end
 
-      it "return status 401" do
+      it "returns status 401" do
         expect(response.status).to eq(401)
       end
 
-      it "return an error message" do
-        expect(json['message']).to_not be_nil
+      it "returns an error message" do
+        expect(json['message']).not_to be_nil
       end
 
-      it "return invalid credentials error code" do
+      it "returns invalid credentials error code" do
         expect(json['code']).to eq('authentication_failure')
       end
     end

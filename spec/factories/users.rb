@@ -25,4 +25,11 @@ FactoryGirl.define do
     #end
 
   end
+
+  factory :token_user, class: User do
+    username 'matt@punchstock.com'
+    account_id '4752939'
+    email 'matt@punchstock.com'
+  end
+
 end

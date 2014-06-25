@@ -2,25 +2,39 @@ require 'rest_client'
 require 'date'
 
 module Security
-  class GettyToken < BaseToken
+  class GettyToken
     include Configurable
 
+    attr_reader :account_id, :value, :expires_at
     attr_accessor :caller_token
 
-    def self.create(username, password)
+    def self.create(username, password, client_ip, options = {})
       getty_token = nil
-      response = call_create_session(username, password)
+      response = call_get_user_token(username, password, client_ip, options)
 
-      status = response["ResponseHeader"]["Status"]
+      status = response['ResponseHeader']['Status']
 
-      if status == "success"
-        token = response["CreateSessionResult"]["Token"]
+      if ['success', 'warning'].include?(status)
+        token = response['GetUserTokenResponseBody']['NonSecureToken']['Token']
         getty_token = GettyToken.new(token)
       end
       getty_token
     end
 
-    def initialize(token)
+    def self.renew(token_value, options = {})
+      getty_token = nil
+      response = call_renew_token(token_value, options)
+
+      status = response['ResponseHeader']['Status']
+
+      if ['success', 'warning'].include?(status)
+        token = response['RenewTokenResponseBody']['Token']
+        getty_token = GettyToken.new(token)
+      end
+      getty_token
+    end
+
+    def initialize(token, auth_system_id = self.class.config.auth_system_id)
       originating_token, caller_token = separate_tokens(token)
 
       @analyzer = Security::GettyTokenAnalyzer.new(originating_token)
@@ -28,44 +42,69 @@ module Security
       @caller_token = caller_token
       @expires_at = @analyzer.expires_at
       @account_id = @analyzer.account_id
+      @auth_system_id = auth_system_id.to_s
     end
 
     def valid?
-      @analyzer.authentic? && !@analyzer.expired? &&
-        @analyzer.system_id == self.class.config.auth_system_id.to_s
+      @analyzer.authentic? && !expired? &&
+        @analyzer.system_id == @auth_system_id
     end
 
     def expired?
-      @analyzer.expired?
+      @analyzer.expires_at < DateTime.now
     end
 
     private
 
-    def self.call_create_session(username, password)
+    def self.call_get_user_token(username, password, client_ip, options)
       begin
-        request = create_request(username, password)
-        response = RestClient.post(config.endpoint,
-                                request,
-                                {'Content-Type' => 'application/json'})
-        return JSON.parse(response)
+        request = {
+          'RequestHeader' => header(options),
+          'GetUserTokenRequestBody' => {
+            'ClientIp' => client_ip,
+            'EnhancedAuthenticationMode' => 0,
+            'SystemId' => config.auth_system_id,
+            'SystemPassword' => config.auth_system_password,
+            'UserName' => username,
+            'UserPassword' => password
+          }
+        }.to_json
+
+        return call_service(config.get_user_token_endpoint, request)
       rescue RestClient::Exception => e
         #TODO: Log error
-        raise TokenError.new("Error occurred while retrieving authentication token for '#{username}'")
+        raise TokenError.new("Error occurred retrieving authentication token for '#{username}'")
       end
     end
 
-    def self.create_request(username, password)
+    def self.call_renew_token(token, options)
+      begin
+        request = {
+          'RequestHeader' => header(options),
+          'RenewTokenRequestBody' => {
+            'SystemId' => config.auth_system_id,
+            'SystemPassword' => config.auth_system_password,
+            'Token' => token
+          }
+        }.to_json
+
+        return call_service(config.renew_token_endpoint, request)
+      rescue RestClient::Exception => e
+        #TODO: Log error
+        raise TokenError.new("Error occurred renewing authentication token")
+      end
+    end
+
+    def self.header(options)
       {
-        RequestHeader: {
-          Token: ""
-        },
-        CreateSessionRequestBody: {
-          SystemId:       config.auth_system_id,
-          SystemPassword: config.auth_system_password,
-          UserName:       username,
-          UserPassword:   password
-        }
-      }.to_json
+        'Token' => '',
+        'CoordinationId' => options[:coordination_id] || ''
+      }
+    end
+
+    def self.call_service(endpoint, request)
+      response = RestClient.post(endpoint, request, {'Content-Type' => 'application/json'})
+      JSON.parse(response)
     end
 
     def separate_tokens(token)
@@ -76,6 +115,8 @@ module Security
 
       return originating_token, caller_token
     end
+  end
 
+  class TokenError < StandardError
   end
 end

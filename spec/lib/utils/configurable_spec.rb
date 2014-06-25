@@ -1,5 +1,3 @@
-require 'unit_spec_helper'
-
 require 'utils/configurable'
 
 class ConfigurableDouble

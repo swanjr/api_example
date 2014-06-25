@@ -16,20 +16,15 @@ WebMock.disable_net_connect!(allow_localhost: true)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 # Include examples from anywhere.
-Dir[Rails.root.join("spec/**/*examples.rb")].each { |f| require f }
+#Dir[Rails.root.join("spec/**/*examples.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
+ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.verify_doubled_constant_names = true
-  end
-
-  # Disable old 'should' systax
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -40,12 +35,23 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
-  # Add request spec helpers
-  config.include Response::JsonHelpers, type: :request
+  # RSpec Rails can automatically mix in different behaviours to your tests
+  # based on their file location, for example enabling you to call `get` and
+  # `post` in specs under `spec/controllers`.
+  #
+  # You can disable this behaviour by removing the line below, and instead
+  # explicitly tag your specs with their type, e.g.:
+  #
+  #     RSpec.describe UsersController, :type => :controller do
+  #       # ...
+  #     end
+  #
+  # The different available types are documented in the features, such as in
+  # https://relishapp.com/rspec/rspec-rails/docs
+  config.infer_spec_type_from_file_location!
 
-  # Run specs in random order to surface order dependencies. If you find an
-  # order dependency and want to debug it, you can fix the order by providing
-  # the seed, which is printed after each run.
-  #     --seed 1234
-  config.order = "random"
+  # Add rails specific spec helpers
+  config.include AuthenticationHelper, type: :request
+  config.include Response::JsonHelper, type: :request
+  config.include ShowExceptionsHelper, type: :request
 end

@@ -1,5 +1,3 @@
-require 'unit_spec_helper'
-
 require 'utils/configurable'
 require 'security/errors'
 require 'security/getty_token_analyzer'
@@ -48,11 +46,6 @@ describe Security::GettyTokenAnalyzer do
         end
       end
 
-      describe '#expired?' do
-        it 'returns false' do
-          expect(analyzer.expired?).to be(false)
-        end
-      end
     end
   end
 
@@ -78,12 +71,6 @@ describe Security::GettyTokenAnalyzer do
         expect(analyzer.authentic?).to be(false)
       end
     end
-
-    describe '#expired?' do
-      it 'returns false' do
-        expect(analyzer.expired?).to be(false)
-      end
-    end
   end
 
   context 'with an expired token' do
@@ -93,12 +80,6 @@ describe Security::GettyTokenAnalyzer do
     describe '#authentic?' do
       it 'returns true' do
         expect(analyzer.authentic?).to be(true)
-      end
-    end
-
-    describe '#expired?' do
-      it 'returns false' do
-        expect(analyzer.expired?).to be(true)
       end
     end
   end

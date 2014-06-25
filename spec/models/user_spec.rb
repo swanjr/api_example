@@ -1,8 +1,9 @@
-require 'unit_spec_helper'
+require 'active_record_helper'
 
 require 'models/user'
 
 describe User do
+
   describe "validations" do
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_presence_of(:account_id) }

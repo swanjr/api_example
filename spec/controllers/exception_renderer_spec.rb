@@ -1,12 +1,10 @@
-require 'unit_spec_helper'
-
-require 'action_dispatch'
+require 'rails_helper'
 
 require 'utils/configurable'
 require 'controllers/errors/base_error'
-require 'controllers/exception_renderer'
+require 'exception_renderer'
 
-describe ExceptionRenderer do
+describe ExceptionRenderer, type: :none do
   before(:all) do
     described_class.configure do |config|
       config.error_mappings = {'StandardError' => BaseError.new('A custom message', 111, :custom_code, 'now')}
