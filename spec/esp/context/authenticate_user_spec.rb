@@ -4,7 +4,8 @@ require 'utils/configurable'
 require 'models/security/getty_token'
 require 'models/user'
 require 'esp/context/authenticate_user'
-require 'esp/errors'
+require 'esp/base_error'
+require 'esp/unknown_user_error'
 
 describe Context::AuthenticateUser do
   let(:token_mock) { instance_double('Security::GettyToken') }
@@ -57,10 +58,10 @@ describe Context::AuthenticateUser do
       end
 
       context "when the user does not exist" do
-        it "raise an AuthorizationError" do
+        it "raise an unknown user error" do
           allow(described_class::AuthorizedUser).to receive(:find_by_account_id).and_return(nil)
 
-          expect{ described_class.authenticate(nil, nil, nil) }.to raise_error(Esp::UnknownUserError)
+          expect{ described_class.authenticate(nil, nil, nil) }.to raise_error(UnknownUserError)
         end
       end
 

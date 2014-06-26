@@ -17,7 +17,7 @@ module TokenAuthentication
     token.gsub!(/'/, '') if token
 
     @current_user = Context::AuthenticateUser.authenticate_token(token)
-    raise AuthenticationError.new("Invalid authentication token") if @current_user.nil?
+    raise API::AuthenticationError.new("Invalid authentication token") if @current_user.nil?
   end
 
   def header_token

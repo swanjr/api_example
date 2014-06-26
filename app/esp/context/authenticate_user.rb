@@ -39,7 +39,7 @@ module Context
       if authorized_user
         authorized_user.token = @token
       else
-        raise Esp::UnknownUserError.new("User with account id #{@token.account_id} has not been added to the database.")
+        raise UnknownUserError.new("User with account id #{@token.account_id} has not been added to the database.")
       end
       authorized_user
     end

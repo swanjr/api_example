@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 require 'utils/configurable'
-require 'controllers/errors/base_error'
+require 'controllers/api/base_error'
 require 'exception_renderer'
 
 describe ExceptionRenderer, type: :none do
   before(:all) do
     described_class.configure do |config|
-      config.error_mappings = {'StandardError' => BaseError.new('A custom message', 111, :custom_code, 'now')}
+      config.error_mappings = {'StandardError' => API::BaseError.new('A custom message', 111, :custom_code, 'now')}
     end
   end
 
@@ -17,8 +17,8 @@ describe ExceptionRenderer, type: :none do
 
   let(:exception_renderer) { ExceptionRenderer.new }
 
-  it "renders the exception pass in if it is child of BaseError" do
-    env = {'action_dispatch.exception' => BaseError.new('Base error', 600, :error_code)}
+  it "renders the exception pass in if it is child of API::BaseError" do
+    env = {'action_dispatch.exception' => API::BaseError.new('Base error', 600, :error_code)}
     result = exception_renderer.call(env)
 
     expect(result[0]).to eq(600)

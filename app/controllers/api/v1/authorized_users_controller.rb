@@ -10,7 +10,7 @@ class API::V1::AuthorizedUsersController < API::BaseController
         :serializer => AuthorizedUserSerializer,
         :location => api_v1_authorized_user_url(authorized_user.id)
     else
-      raise AuthenticationError.new("Invalid username or password")
+      raise API::AuthenticationError.new("Invalid username or password")
     end
   end
 

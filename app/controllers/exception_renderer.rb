@@ -4,7 +4,7 @@ class ExceptionRenderer
   def call(env)
     exception = env["action_dispatch.exception"]
 
-    unless exception.kind_of?(BaseError)
+    unless exception.kind_of?(API::BaseError)
       exception = map_exception(exception, env)
     end
 
@@ -20,10 +20,10 @@ class ExceptionRenderer
       # Check if rails can normally handle this exception
       status = ActionDispatch::ExceptionWrapper.new(env, exception).status_code
       if status.present? && status != 500
-        mapped_exception = BaseError.new(exception.message, status, :client_error)
+        mapped_exception = API::BaseError.new(exception.message, status, :client_error)
       else
         # Fall back to 500 error
-        mapped_exception = BaseError.new("Internal server error")
+        mapped_exception = API::BaseError.new("Internal server error")
       end
     end
     mapped_exception

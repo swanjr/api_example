@@ -29,6 +29,6 @@ class API::BaseController < ActionController::Metal
 
   respond_to :json
 
-  # Responder raises resource errors as a ValidationError
+  # Responder raises resource errors as a API::ValidationError
   self.responder = JSONErrorsResponder
 end

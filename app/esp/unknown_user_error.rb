@@ -1,0 +1,2 @@
+class UnknownUserError < BaseError
+end

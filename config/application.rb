@@ -32,14 +32,9 @@ module EspAPI
     #config.autoload_paths += %W(#{config.root}/app/commands)
     #config.autoload_paths += %W(#{config.root}/app/queries)
     #config.autoload_paths += %W(#{config.root}/app/serializers)
-    config.autoload_paths += %W(#{config.root}/app/controllers/errors)
     config.autoload_paths += %W(#{config.root}/app/esp/**)
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += %W(#{config.root}/lib/utils)
-
-    # Manually loaded to avoid folder/module naming constraints
-    require_dependency "#{config.root}/app/esp/errors"
-    #require "#{config.root}/lib/security/errors"
 
     # Remove middleware
     config.middleware.delete "ActionDispatch::Cookies"
@@ -65,8 +60,5 @@ module EspAPI
 
     # Initialize endpoints hash for use in environment files
     config.endpoints = {}
-
-    # Set RestClient logger
-    RestClient.log = Rails.logger
   end
 end
