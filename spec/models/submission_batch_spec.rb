@@ -13,8 +13,7 @@ describe SubmissionBatch do
       .in_array(%w(creative editorial)) }
     it { is_expected.to ensure_inclusion_of(:istock)
       .in_array([true, false]) }
-    it { is_expected.to ensure_inclusion_of(:status)
-      .in_array(%w(pending)) }
+    it { is_expected.to validate_presence_of(:status) }
   end
 
 end
