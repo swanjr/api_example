@@ -11,7 +11,7 @@ describe "AuthorizedUsers API V1" do
 
       let(:user) { FactoryGirl.create(:user, :account_id => account_id) }
 
-      before(:each) do
+      before(:example) do
         request_mock = {
           'RequestHeader' => {
             'Token' => '',
@@ -55,7 +55,7 @@ describe "AuthorizedUsers API V1" do
     end
 
     context "when sent invalid credentials" do
-      before(:each) do
+      before(:example) do
         request_mock = {
           'RequestHeader' => {
             'Token' => '',

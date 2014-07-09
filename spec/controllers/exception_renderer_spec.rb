@@ -5,13 +5,13 @@ require 'controllers/api/base_error'
 require 'exception_renderer'
 
 describe ExceptionRenderer, type: :none do
-  before(:all) do
+  before(:context) do
     described_class.configure do |config|
       config.error_mappings = {'StandardError' => API::BaseError.new('A custom message', 111, :custom_code, 'now')}
     end
   end
 
-  before(:each) do
+  before(:example) do
     allow(DateTime).to receive(:now).and_return('now')
   end
 

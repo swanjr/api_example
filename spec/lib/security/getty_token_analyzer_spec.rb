@@ -3,7 +3,7 @@ require 'security/errors'
 require 'security/getty_token_analyzer'
 
 describe Security::GettyTokenAnalyzer do
-  before(:all) do
+  before(:context) do
     described_class.configure do |config|
       config.sts_public_key = 'rmxWUDxTISNTbVte2csm5alfXNEoFQo9NcdKriIVmk11QhPbNgIvTuQg2o+7MleCLcydC7PMpxIwTd7ZNiQtbivd2N\/pAsLjjhKNDNo9GFd4EhWK6T1Lq3Fm+mWYY2sbtNc4bPm158U9vVDKEeHLY4y01KoHZ7YTzH2tzA4XwEU='
     end

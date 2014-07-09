@@ -7,7 +7,7 @@ describe "SubmissionBatches API V1" do
   describe "POST /api/v1/submission_batches" do
     context 'with a valid request' do
 
-      before(:each) do
+      before(:example) do
         post '/api/v1/submission_batches',
           {:submission_batch => submission_attrs}, http_authorization_header
       end
@@ -29,7 +29,7 @@ describe "SubmissionBatches API V1" do
     end
 
     context 'with an invalid request' do
-      before(:each) do 
+      before(:example) do
         invalid_params = submission_attrs
         invalid_params.delete(:media_type)
         post '/api/v1/submission_batches',

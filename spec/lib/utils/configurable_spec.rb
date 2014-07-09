@@ -10,7 +10,7 @@ class ConfigurableDouble
 end
 
 describe Configurable do
-  before(:all) do
+  before(:context) do
     ConfigurableDouble.configure do |config|
       config.field1 = '1'
       config.field2 = 2

@@ -7,13 +7,12 @@ describe SubmissionBatch do
   describe "validations" do
     it { is_expected.to validate_presence_of(:owner_id) }
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:istock) }
+    it { is_expected.to validate_presence_of(:status) }
     it { is_expected.to ensure_inclusion_of(:media_type)
       .in_array(%w(video)) }
     it { is_expected.to ensure_inclusion_of(:asset_family)
       .in_array(%w(creative editorial)) }
-    it { is_expected.to ensure_inclusion_of(:istock)
-      .in_array([true, false]) }
-    it { is_expected.to validate_presence_of(:status) }
   end
 
 end

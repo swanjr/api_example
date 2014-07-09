@@ -3,7 +3,7 @@ require 'security/getty_token_analyzer'
 require 'models/security/getty_token'
 
 describe Security::GettyToken do
-  before(:all) do
+  before(:context) do
     described_class.configure do |config|
       config.get_user_token_endpoint = 'www.server.com/api/SecurityToken/GetUserToken'
       config.renew_token_endpoint = 'www.server.com/api/SecurityToken/RenewToken'
@@ -19,7 +19,7 @@ describe Security::GettyToken do
   let(:account_id) { '314' }
   let(:system_id) { '100' }
 
-  before(:each) do
+  before(:example) do
     @analyzer = instance_double('Security::GettyTokenAnalyzer')
     allow(@analyzer).to receive(:authentic?).and_return(true)
     allow(@analyzer).to receive(:expires_at).and_return(expires_at)
@@ -67,7 +67,7 @@ describe Security::GettyToken do
   describe ".create" do
     context "when credentials are valid" do
 
-      before(:each) do
+      before(:example) do
         response = { 'ResponseHeader' => { 'Status' => 'success' },
                     'GetUserTokenResponseBody' => {
                       'NonSecureToken' => {
@@ -112,7 +112,7 @@ describe Security::GettyToken do
     end
 
     context "when credentials are invalid" do
-      before(:each) do
+      before(:example) do
         response = {
           "ResponseHeader" => { "Status" => "failed" }
         }.to_json
@@ -173,7 +173,7 @@ describe Security::GettyToken do
   describe "#renew" do
     context "when token is renewable" do
 
-      before(:each) do
+      before(:example) do
         response = {'ResponseHeader' => { 'Status' => 'success' },
                       'RenewTokenResponseBody' => {
                         'Token' => valid_token
@@ -210,7 +210,7 @@ describe Security::GettyToken do
     end
 
     context "when token is not renewable" do
-      before(:each) do
+      before(:example) do
         response = {
           "ResponseHeader" => { "Status" => "failed" }
         }.to_json

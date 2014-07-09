@@ -13,7 +13,7 @@ describe Context::AuthenticateUser do
     :username => 'johndoe',
     :account_id =>1) }
 
-  before(:each) do
+  before(:example) do
     allow(token_mock).to receive(:account_id).and_return(user.account_id)
 
     allow(described_class::AuthorizedUser).to receive(:find_by_account_id).and_return(user)
@@ -22,7 +22,7 @@ describe Context::AuthenticateUser do
   describe "#authenticate" do
     context "with valid credentials" do
 
-      before(:each) do
+      before(:example) do
         allow(Security::GettyToken).to receive(:create).and_return(token_mock)
 
         allow(user).to receive(:account_id)
@@ -68,7 +68,7 @@ describe Context::AuthenticateUser do
     end
 
     context "with invalid credentials" do
-      before(:each) do
+      before(:example) do
         allow(Security::GettyToken).to receive(:create).and_return(nil)
       end
 
@@ -82,7 +82,7 @@ describe Context::AuthenticateUser do
 
   describe "#authenticate_token" do
     context('returns an AuthorizedUser') do
-      before(:each) do
+      before(:example) do
         allow(Security::GettyToken).to receive(:new).and_return(token_mock)
       end
 

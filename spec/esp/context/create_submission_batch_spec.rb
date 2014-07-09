@@ -4,7 +4,7 @@ require 'esp/context/create_submission_batch'
 require 'models/submission_batch'
 
 describe Context::CreateSubmissionBatch do
-  before(:each) do
+  before(:example) do
     allow(Date).to receive(:current).and_return('now')
   end
 
