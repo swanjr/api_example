@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.1'
 gem 'puma'
-gem 'active_model_serializers'
+gem 'representable'
 gem 'rest-client'
 gem 'ffprober', path: 'vendor/bundle/ffprober'
 gem 'fog'
@@ -28,7 +28,7 @@ group :test do
   gem 'shoulda', :require => false
   gem 'faker'
   gem 'factory_girl_rails'
-  gem 'psych', '>= 2.0.5'
+  #gem 'psych', '>= 2.0.5'
   gem 'webmock'
 end
 

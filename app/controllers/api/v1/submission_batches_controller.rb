@@ -1,19 +1,16 @@
 class API::V1::SubmissionBatchesController < API::BaseController
 
   def create
-    submission_batch = Context::CreateSubmissionBatch.create(submission_batch_params)
+    representer = SubmissionBatch.new.extend(SubmissionBatchRepresenter)
+    representer.from_json(request.raw_post,
+                          owner_id: current_user.id)
+    CreateSubmissionBatch.create(representer)
 
-    respond_with :api, :v1, submission_batch
+    respond_with :api, :v1, representer
   end
 
   def show
 
   end
 
-  private
-
-  def submission_batch_params
-    params[:submission_batch][:owner_id] = @current_user.id
-    params.require('submission_batch').permit(:owner_id, :name, :media_type, :asset_family, :istock)
-  end
 end

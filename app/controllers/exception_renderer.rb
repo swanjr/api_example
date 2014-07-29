@@ -4,10 +4,12 @@ class ExceptionRenderer
   def call(env)
     exception = env["action_dispatch.exception"]
 
+    # Map to API error unless it already is one
     unless exception.kind_of?(API::BaseError)
       exception = map_exception(exception, env)
     end
 
+    # Render error json
     [exception.http_status_code, {'Content-Type' => 'application/json'}, [exception.to_json]]
   end
 

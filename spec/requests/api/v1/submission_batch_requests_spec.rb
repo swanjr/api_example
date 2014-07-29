@@ -9,7 +9,7 @@ describe "SubmissionBatches API V1" do
 
       before(:example) do
         post '/api/v1/submission_batches',
-          {:submission_batch => submission_attrs}, http_authorization_header
+          submission_attrs.to_json, http_authorization_header
       end
 
       it "returns status 201" do
@@ -33,7 +33,7 @@ describe "SubmissionBatches API V1" do
         invalid_params = submission_attrs
         invalid_params.delete(:media_type)
         post '/api/v1/submission_batches',
-          {:submission_batch => invalid_params}, http_authorization_header
+          invalid_params.to_json, http_authorization_header
       end
 
       it "returns status 422" do

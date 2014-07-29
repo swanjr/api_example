@@ -3,11 +3,11 @@ require 'active_record_helper'
 require 'utils/configurable'
 require 'models/security/getty_token'
 require 'models/user'
-require 'esp/context/authenticate_user'
-require 'esp/base_error'
-require 'esp/unknown_user_error'
+require 'contexts/base_error'
 
-describe Context::AuthenticateUser do
+require 'contexts/authenticate_user'
+
+describe AuthenticateUser do
   let(:token_mock) { instance_double('Security::GettyToken') }
   let(:user) { described_class::AuthorizedUser.new(
     :username => 'johndoe',

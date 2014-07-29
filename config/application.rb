@@ -4,6 +4,7 @@ require File.expand_path('../boot', __FILE__)
 require "active_model/railtie"
 require "active_record/railtie"
 require "action_controller/railtie"
+require "representable/json"
 
 # require "action_mailer/railtie"
 # require "action_view/railtie"
@@ -30,9 +31,7 @@ module EspAPI
 
     # Load added directories
     #config.autoload_paths += %W(#{config.root}/app/commands)
-    #config.autoload_paths += %W(#{config.root}/app/queries)
-    #config.autoload_paths += %W(#{config.root}/app/serializers)
-    config.autoload_paths += %W(#{config.root}/app/esp/**)
+    config.autoload_paths += %W(#{config.root}/app/contexts)
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += %W(#{config.root}/lib/utils)
 
@@ -42,6 +41,7 @@ module EspAPI
     config.middleware.delete "ActionDispatch::Flash"
     config.middleware.delete "ActionDispatch::BestStandardsSupport"
     config.middleware.delete "Rack::MethodOverride"
+    config.middleware.delete "ActionDispatch::ParamsParser"
 
     # Configure exceptions app to handle all uncaught errors
     config.exceptions_app = lambda do |env|

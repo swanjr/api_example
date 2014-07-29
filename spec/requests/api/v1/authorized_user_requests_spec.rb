@@ -38,7 +38,7 @@ describe "AuthorizedUsers API V1" do
           with(:body => request_mock, :headers => {'Content-Type' => 'application/json'}).
           to_return(:status => 200, :body => response_mock)
 
-        post '/api/v1/authorized_users', {username: user.username, password: 'password'}
+        post '/api/v1/authorized_users', {username: user.username, password: 'password'}.to_json
       end
 
       it "returns status 201" do
@@ -87,7 +87,7 @@ describe "AuthorizedUsers API V1" do
           with(:body => request_mock, :headers => {'Content-Type' => 'application/json'}).
           to_return(:status => 200, :body => response_mock)
 
-        post '/api/v1/authorized_users', {username: 'johndoe', password: 'bad_password'}
+        post '/api/v1/authorized_users', {username: 'johndoe', password: 'bad_password'}.to_json
       end
 
       it "returns status 401" do
