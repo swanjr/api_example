@@ -10,5 +10,7 @@ class CreateSubmissionBatches < ActiveRecord::Migration
       t.datetime :last_contribution_submitted_at
       t.timestamps
     end
+
+    add_index :submission_batches, :owner_id
   end
 end

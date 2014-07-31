@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 20140518161748) do
     t.datetime "updated_at"
   end
 
+  add_index "submission_batches", ["owner_id"], name: "index_submission_batches_on_owner_id", using: :btree
+
   create_table "users", force: true do |t|
     t.string   "username"
     t.string   "account_id"
