@@ -3,9 +3,6 @@ require 'active_record_helper'
 require 'utils/configurable'
 require 'models/security/getty_token'
 require 'models/user'
-require 'contexts/base_error'
-require 'contexts/unknown_user_error'
-require 'contexts/expired_token_error'
 
 require 'contexts/authenticate_user'
 

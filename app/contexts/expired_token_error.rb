@@ -1,2 +1,0 @@
-class ExpiredTokenError < BaseError
-end

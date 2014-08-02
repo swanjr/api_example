@@ -20,7 +20,8 @@ class AuthenticateUser
     AuthorizedUser.create(@credentials)
   end
 
-  ### Role Classes ###
+
+  ## Role Classes ##
   class AuthorizedUser < User
     attr_accessor :token
 
@@ -74,5 +75,11 @@ class AuthenticateUser
       token
     end
   end
+end
 
+## Error classes ##
+class ExpiredTokenError < StandardError
+end
+
+class UnknownUserError < StandardError
 end
