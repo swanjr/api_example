@@ -1,0 +1,2 @@
+class ExpiredTokenError < BaseError
+end

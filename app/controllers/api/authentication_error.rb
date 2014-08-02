@@ -1,5 +1,5 @@
 module API
-  class AuthenticationError < BaseError
+  class AuthenticationError < API::BaseError
     def initialize(developer_message)
       super(developer_message)
       @http_status_code = 401

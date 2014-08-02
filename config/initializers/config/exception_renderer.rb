@@ -6,7 +6,8 @@ Rails.application.config.to_prepare do
 
   ExceptionRenderer.configure do |config|
     config.error_mappings = {
-      'Esp::UnknownUserError' => API::AuthorizationError.new('User has not been registered with the system.')
+      'UnknownUserError' => API::AuthorizationError.new('User has not been registered with the system.'),
+      'ExpiredTokenError' => API::AuthenticationError.new('User token has expired.')
     }
   end
 

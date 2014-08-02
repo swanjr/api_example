@@ -23,6 +23,8 @@ module Security
 
     def self.renew(token_value, options = {})
       getty_token = nil
+      token_value = token_value.value if token_value.class.equal?(self.class)
+
       response = call_renew_token(token_value, options)
 
       status = response['ResponseHeader']['Status']

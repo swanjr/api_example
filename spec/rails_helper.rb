@@ -51,7 +51,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   # Add rails specific spec helpers
-  config.include AuthenticationHelper, type: :request
-  config.include Response::JsonHelper, type: :request
   config.include ShowExceptionsHelper, type: :request
+  config.include Response::JsonHelper, type: :request
+  config.include AuthenticationHelper, type: :request
 end

@@ -4,12 +4,19 @@ require 'models/security/getty_token'
 
 describe Security::GettyToken do
   before(:context) do
+    # Store original config
+    @original_config = described_class.config.to_hash
     described_class.configure do |config|
       config.get_user_token_endpoint = 'www.server.com/api/SecurityToken/GetUserToken'
       config.renew_token_endpoint = 'www.server.com/api/SecurityToken/RenewToken'
       config.auth_system_id = '100'
       config.auth_system_password = 'system_password'
     end
+  end
+
+  after(:context) do
+    # Restore original config
+    described_class.config.from_hash(@original_config)
   end
 
   let(:valid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9PQo=|3' }
@@ -202,6 +209,14 @@ describe Security::GettyToken do
 
       it "returns a valid GettyToken" do
         token = Security::GettyToken.renew(expired_token)
+
+        expect(token.account_id).to eq(account_id)
+        expect(token.value).to eq(valid_token)
+        expect(token.expires_at).to eq(expires_at)
+      end
+
+      it "returns a valid GettyToken even if the expired token is a GettyToken object" do
+        token = Security::GettyToken.renew(Security::GettyToken.new(expired_token))
 
         expect(token.account_id).to eq(account_id)
         expect(token.value).to eq(valid_token)

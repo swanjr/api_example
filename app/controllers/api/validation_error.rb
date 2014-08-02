@@ -1,5 +1,5 @@
 module API
-  class ValidationError < BaseError
+  class ValidationError < API::BaseError
     attr_reader :messages
 
     def initialize(developer_message)

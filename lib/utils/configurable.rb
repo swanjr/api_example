@@ -4,12 +4,19 @@ module Configurable
   end
 
   module ClassMethods
-    attr_accessor :config
+    def config
+      @config ||= Configuration.new
+    end
+
+    def config=(config)
+      @config = config
+    end
 
     def configure
       self.config ||= Configuration.new
       yield(config)
     end
+
   end
 
   class Configuration
@@ -17,6 +24,14 @@ module Configurable
 
     def respond_to?(name, include_private = false)
       super || @@options.key?(name.to_sym)
+    end
+
+    def to_hash
+      @@options.clone
+    end
+
+    def from_hash(config)
+      @@options = config
     end
 
     private

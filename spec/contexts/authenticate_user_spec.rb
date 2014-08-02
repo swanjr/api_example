@@ -4,6 +4,8 @@ require 'utils/configurable'
 require 'models/security/getty_token'
 require 'models/user'
 require 'contexts/base_error'
+require 'contexts/unknown_user_error'
+require 'contexts/expired_token_error'
 
 require 'contexts/authenticate_user'
 
@@ -15,7 +17,6 @@ describe AuthenticateUser do
 
   before(:example) do
     allow(token_mock).to receive(:account_id).and_return(user.account_id)
-
     allow(described_class::AuthorizedUser).to receive(:find_by_account_id).and_return(user)
   end
 
@@ -24,9 +25,6 @@ describe AuthenticateUser do
 
       before(:example) do
         allow(Security::GettyToken).to receive(:create).and_return(token_mock)
-
-        allow(user).to receive(:account_id)
-        allow(user).to receive(:save!)
       end
 
       it "creates a valid token" do
@@ -37,23 +35,16 @@ describe AuthenticateUser do
 
       context "when the user exists" do
         it 'successfully retrieves the user' do
-          authorized_user = described_class.authenticate(nil, nil, nil)
+          authorized_user = described_class.authenticate(user.username, 'pwd', '1.1.1.1')
 
           expect(authorized_user.username).to eq(user.username)
           expect(authorized_user.account_id).to eq(user.account_id)
         end
 
         it "returns an AuthorizedUser with a token" do
-          authorized_user = described_class.authenticate(nil, nil, nil)
+          authorized_user = described_class.authenticate(user.username, 'pwd', '1.1.1.1')
 
           expect(authorized_user.token).to_not be_nil
-        end
-
-        context "and the authenticated username and database username to not match" do
-          it "override the database username" do
-            authorized_user = described_class.authenticate('new_user', nil, nil)
-            expect(authorized_user.username).to eq('new_user')
-          end
         end
       end
 
@@ -61,7 +52,7 @@ describe AuthenticateUser do
         it "raise an unknown user error" do
           allow(described_class::AuthorizedUser).to receive(:find_by_account_id).and_return(nil)
 
-          expect{ described_class.authenticate(nil, nil, nil) }.to raise_error(UnknownUserError)
+          expect{ described_class.authenticate(user.username, 'pwd', '1.1.1.1') }.to raise_error(UnknownUserError)
         end
       end
 
@@ -73,7 +64,7 @@ describe AuthenticateUser do
       end
 
       it "returns nil" do
-        unauthorized_user = described_class.authenticate('user', 'bad_password', '1.1.1.1')
+        unauthorized_user = described_class.authenticate('bad_username', 'bad_password', '1.1.1.1')
 
         expect(unauthorized_user).to be_nil
       end
@@ -81,39 +72,52 @@ describe AuthenticateUser do
   end
 
   describe "#authenticate_token" do
-    context('returns an AuthorizedUser') do
-      before(:example) do
-        allow(Security::GettyToken).to receive(:new).and_return(token_mock)
-      end
-
-      it "returns an AuthorizedUser for a valid token" do
-        allow(token_mock).to receive(:valid?).and_return(true)
-
-        authorized_user = described_class.authenticate_token('valid_token')
-        expect(authorized_user).to_not be_nil
-      end
-
-      it "returns an AuthorizedUser if token is" do
-        expired_token = 'expired_token'
-        allow(Security::GettyToken).to receive(:new).with(expired_token).and_return(token_mock)
-        allow(Security::GettyToken).to receive(:renew).with(expired_token).and_return(token_mock)
-
-        allow(token_mock).to receive(:valid?).and_return(false)
-        allow(token_mock).to receive(:expired?).and_return(true)
-        allow(token_mock).to receive(:value).and_return(expired_token)
-
-        authorized_user = described_class.authenticate_token(expired_token)
-        expect(authorized_user).to_not be_nil
-      end
-    end
-
     it "returns nil if token value parameter is nil" do
       expect(described_class.authenticate_token(nil)).to be_nil
     end
 
-    it "returns nil if the token could not be renewed" do
-      allow(Security::GettyToken).to receive(:renew).and_return(nil)
-      expect(described_class.authenticate_token(nil)).to be_nil
+    it "returns an AuthorizedUser for a valid token" do
+      allow(token_mock).to receive(:valid?).and_return(true)
+      allow(token_mock).to receive(:expired?).and_return(false)
+      allow(Security::GettyToken).to receive(:new).and_return(token_mock)
+
+      authorized_user = described_class.authenticate_token('valid_token')
+      expect(authorized_user).to_not be_nil
+    end
+
+    it "returns nil if token is not expired but invalid" do
+      invalid_token = 'invalid_token'
+      allow(token_mock).to receive(:valid?).and_return(false)
+      allow(token_mock).to receive(:expired?).and_return(false)
+      allow(Security::GettyToken).to receive(:new).with(invalid_token).and_return(token_mock)
+
+      authorized_user = described_class.authenticate_token(invalid_token)
+      expect(authorized_user).to be_nil
+    end
+
+    context "when the token is expired" do
+      let(:expired_token) { 'expired_token' }
+
+      before(:example) do
+        allow(token_mock).to receive(:expired?).and_return(true)
+        allow(Security::GettyToken).to receive(:new).with(expired_token).and_return(token_mock)
+      end
+
+      it "returns an AuthorizedUser if it can be renewed" do
+        renewed_token_mock = instance_double('Security::GettyToken')
+        allow(renewed_token_mock).to receive(:valid?).and_return(true)
+        allow(renewed_token_mock).to receive(:account_id).and_return(user.account_id)
+        allow(Security::GettyToken).to receive(:renew).with(token_mock).and_return(renewed_token_mock)
+
+        authorized_user = described_class.authenticate_token(expired_token)
+        expect(authorized_user).to_not be_nil
+      end
+
+      it "raises ExpiredTokenError if the token could not be renewed" do
+        allow(Security::GettyToken).to receive(:renew).and_return(nil)
+
+        expect{ described_class.authenticate_token(expired_token)}.to raise_error(ExpiredTokenError)
+      end
     end
   end
 end
