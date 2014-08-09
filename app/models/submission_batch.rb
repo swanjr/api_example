@@ -1,4 +1,6 @@
 class SubmissionBatch < ActiveRecord::Base
+  has_paper_trail ignore: [:last_contribution_submitted_at, :created_at, :updated_at]
+
   validates :owner_id, presence: true
   validates :name, presence: true
   validates :media_type, inclusion: { in: %w(video),

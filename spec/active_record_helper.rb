@@ -2,7 +2,7 @@ ENV["RAILS_ENV"] ||= 'test'
 
 require 'yaml'
 require 'active_record'
-
+require 'paper_trail'
 require 'shoulda-matchers'
 
 connection_info = YAML.load_file("config/database.yml")["test"]

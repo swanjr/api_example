@@ -6,6 +6,7 @@ gem 'rails', '4.1.1'
 gem 'puma'
 gem 'representable'
 gem 'rest-client'
+gem 'paper_trail'
 gem 'ffprober', path: 'vendor/bundle/ffprober'
 gem 'fog'
 gem 'unf' # Required for fog
