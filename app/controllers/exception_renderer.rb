@@ -1,5 +1,9 @@
 class ExceptionRenderer
-  include Configurable
+  cattr_accessor :error_mappings
+
+  def self.configure
+    yield(self)
+  end
 
   def call(env)
     exception = env["action_dispatch.exception"]
@@ -32,6 +36,6 @@ class ExceptionRenderer
   end
 
   def lookup_mapping(exception)
-    self.class.config.error_mappings[exception.class.to_s]
+    self.error_mappings[exception.class.to_s]
   end
 end

@@ -3,7 +3,12 @@ require 'date'
 
 module Security
   class GettyToken
-    include Configurable
+    cattr_accessor :get_user_token_endpoint, :renew_token_endpoint,
+      :auth_system_id, :auth_system_password
+
+    def self.configure
+      yield(self)
+    end
 
     attr_reader :account_id, :value, :expires_at
     attr_accessor :caller_token
@@ -36,7 +41,7 @@ module Security
       getty_token
     end
 
-    def initialize(token, auth_system_id = self.class.config.auth_system_id)
+    def initialize(token, auth_system_id = self.auth_system_id)
       originating_token, caller_token = separate_tokens(token)
 
       @analyzer = Security::GettyTokenAnalyzer.new(originating_token)
@@ -65,14 +70,14 @@ module Security
           'GetUserTokenRequestBody' => {
             'ClientIp' => client_ip,
             'EnhancedAuthenticationMode' => 0,
-            'SystemId' => config.auth_system_id,
-            'SystemPassword' => config.auth_system_password,
+            'SystemId' => self.auth_system_id,
+            'SystemPassword' => self.auth_system_password,
             'UserName' => username,
             'UserPassword' => password
           }
         }.to_json
 
-        return call_service(config.get_user_token_endpoint, request)
+        return call_service(self.get_user_token_endpoint, request)
       rescue RestClient::Exception => e
         #TODO: Log error
         raise TokenError.new("Error occurred retrieving authentication token for '#{username}'")
@@ -84,13 +89,13 @@ module Security
         request = {
           'RequestHeader' => header(options),
           'RenewTokenRequestBody' => {
-            'SystemId' => config.auth_system_id,
-            'SystemPassword' => config.auth_system_password,
+            'SystemId' => self.auth_system_id,
+            'SystemPassword' => self.auth_system_password,
             'Token' => token
           }
         }.to_json
 
-        return call_service(config.renew_token_endpoint, request)
+        return call_service(self.renew_token_endpoint, request)
       rescue RestClient::Exception => e
         #TODO: Log error
         raise TokenError.new("Error occurred renewing authentication token")

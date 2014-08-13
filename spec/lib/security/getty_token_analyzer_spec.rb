@@ -1,4 +1,3 @@
-require 'utils/configurable'
 require 'security/errors'
 require 'security/getty_token_analyzer'
 

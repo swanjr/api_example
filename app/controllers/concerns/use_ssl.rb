@@ -1,7 +1,9 @@
 module UseSsl
   extend ActiveSupport::Concern
 
-  included { force_ssl if: :use_ssl? }
+  included do
+    force_ssl if: :use_ssl?
+  end
 
   private
 

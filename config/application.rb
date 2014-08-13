@@ -33,15 +33,20 @@ module EspAPI
     #config.autoload_paths += %W(#{config.root}/app/commands)
     config.autoload_paths += %W(#{config.root}/app/contexts)
     config.autoload_paths += %W(#{config.root}/lib)
-    config.autoload_paths += %W(#{config.root}/lib/utils)
+    config.autoload_paths += %W(#{config.root}/middleware)
 
     # Remove middleware
+    config.middleware.delete "Rack::Lock"
+    config.middleware.delete "ActionDispatch::Static"
     config.middleware.delete "ActionDispatch::Cookies"
     config.middleware.delete "ActionDispatch::Session::CookieStore"
     config.middleware.delete "ActionDispatch::Flash"
     config.middleware.delete "ActionDispatch::BestStandardsSupport"
     config.middleware.delete "Rack::MethodOverride"
     config.middleware.delete "ActionDispatch::ParamsParser"
+
+    # Add middleware
+    config.middleware.use "ThreadCurrentCleaner"
 
     # Configure exceptions app to handle all uncaught errors
     config.exceptions_app = lambda do |env|
