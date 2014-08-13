@@ -1,22 +1,28 @@
-require 'utils/configurable'
 require 'security/getty_token_analyzer'
 require 'models/security/getty_token'
 
 describe Security::GettyToken do
   before(:context) do
-    # Store original config
-    @original_config = described_class.config.to_hash
-    described_class.configure do |config|
-      config.get_user_token_endpoint = 'www.server.com/api/SecurityToken/GetUserToken'
-      config.renew_token_endpoint = 'www.server.com/api/SecurityToken/RenewToken'
-      config.auth_system_id = '100'
-      config.auth_system_password = 'system_password'
-    end
+    ## Store original config for later restoration. Need because test tokens use 
+    #@original_config = {}
+    #@original_config[:get_user_token_endpoint] = described_class.get_user_token_endpoint
+    #@original_config[:renew_token_endpoint] = described_class.renew_token_endpoint
+    #@original_config[:auth_system_id] = described_class.auth_system_id
+    #@original_config[:auth_system_password] = described_class.auth_system_password
+    #described_class.configure do |config|
+      #config.get_user_token_endpoint = 'www.server.com/api/SecurityToken/GetUserToken'
+      #config.renew_token_endpoint = 'www.server.com/api/SecurityToken/RenewToken'
+      #config.auth_system_id = '100'
+      #config.auth_system_password = 'system_password'
+    #end
   end
 
   after(:context) do
     # Restore original config
-    described_class.config.from_hash(@original_config)
+    #@original_config[:get_user_token_endpoint] = described_class.get_user_token_endpoint
+    #@original_config[:renew_token_endpoint] = described_class.renew_token_endpoint
+    #@original_config[:auth_system_id] = described_class.auth_system_id
+    #@original_config[:auth_system_password] = described_class.auth_system_password
   end
 
   let(:valid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9PQo=|3' }
@@ -97,13 +103,13 @@ describe Security::GettyToken do
           'GetUserTokenRequestBody' => {
             'ClientIp' => '1.1.1.1',
             'EnhancedAuthenticationMode' => 0,
-            'SystemId' => described_class.config.auth_system_id,
-            'SystemPassword' => described_class.config.auth_system_password,
+            'SystemId' => described_class.auth_system_id,
+            'SystemPassword' => described_class.auth_system_password,
             'UserName' => username,
             'UserPassword' => password
           }
         }.to_json
-        expect(RestClient).to receive(:post).with(described_class.config.get_user_token_endpoint, 
+        expect(RestClient).to receive(:post).with(described_class.get_user_token_endpoint, 
                                                   request, {'Content-Type' => 'application/json'})
 
         Security::GettyToken.create(username, password, '1.1.1.1')
@@ -196,12 +202,12 @@ describe Security::GettyToken do
             'CoordinationId' => ''
           },
           'RenewTokenRequestBody' => {
-            'SystemId' => described_class.config.auth_system_id,
-            'SystemPassword' => described_class.config.auth_system_password,
+            'SystemId' => described_class.auth_system_id,
+            'SystemPassword' => described_class.auth_system_password,
             'Token' => expired_token
           }
         }.to_json
-        expect(RestClient).to receive(:post).with(described_class.config.renew_token_endpoint, 
+        expect(RestClient).to receive(:post).with(described_class.renew_token_endpoint, 
                                                   request, {'Content-Type' => 'application/json'})
 
         Security::GettyToken.renew(expired_token)

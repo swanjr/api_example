@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-require 'utils/configurable'
 require 'controllers/api/base_error'
 require 'exception_renderer'
 

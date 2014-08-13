@@ -26,6 +26,7 @@ class API::BaseController < ActionController::Metal
   # Concerns
   include UseSsl
   include TokenAuthentication
+  include StoreRequestInfo
 
   protect_from_forgery with: :null_session
 

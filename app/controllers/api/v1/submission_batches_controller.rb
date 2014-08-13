@@ -10,7 +10,6 @@ class API::V1::SubmissionBatchesController < API::BaseController
   end
 
   def show
-
   end
 
 end

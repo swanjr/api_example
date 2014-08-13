@@ -1,6 +1,5 @@
 require 'active_record_helper'
 
-require 'utils/configurable'
 require 'models/security/getty_token'
 require 'models/user'
 require 'contexts/base_error'
