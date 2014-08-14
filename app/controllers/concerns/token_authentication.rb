@@ -2,7 +2,7 @@ module TokenAuthentication
   extend ActiveSupport::Concern
 
   included do
-    prepend_before_filter :restrict_access
+    prepend_before_action :restrict_access
   end
 
   def current_user

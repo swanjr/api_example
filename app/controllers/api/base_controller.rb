@@ -24,9 +24,10 @@ class API::BaseController < ActionController::Metal
   self.responder = Responder::Master
 
   # Concerns
+  include StoreRequestInfo    # Prepended before action
+  include TokenAuthentication # Prepended before StoreRequestInfo
   include UseSsl
-  include TokenAuthentication
-  include StoreRequestInfo
+  include PaperTrailMetadata
 
   protect_from_forgery with: :null_session
 

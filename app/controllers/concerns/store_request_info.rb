@@ -2,7 +2,7 @@ module StoreRequestInfo
   extend ActiveSupport::Concern
 
   included do
-    before_filter :store_request_info
+    prepend_before_action :store_request_info
   end
 
   private
