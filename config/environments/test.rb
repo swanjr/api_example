@@ -6,7 +6,6 @@ Rails.application.configure do
 
   # Third party endpoints
   config.endpoints[:get_user_token] = "http://entsvca.candidate-gettyimages.com/SecurityToken/json/3.0/GetUserToken"
-  config.endpoints[:renew_token] = "http://entsvca.candidate-gettyimages.com/SecurityToken/json/3.0/RenewToken"
   config.endpoints[:event] = "http://eventsvc.test.gettyimages.com/Event/json/2.0"
   config.endpoints[:dsa] = "http://dsa-candidate.gettyimages.io/assets"
 

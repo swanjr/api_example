@@ -3,8 +3,7 @@ require 'date'
 
 module Security
   class GettyToken
-    cattr_accessor :get_user_token_endpoint, :renew_token_endpoint,
-      :auth_system_id, :auth_system_password
+    cattr_accessor :get_user_token_endpoint, :auth_system_id, :auth_system_password
 
     def self.configure
       yield(self)
@@ -21,21 +20,6 @@ module Security
 
       if ['success', 'warning'].include?(status)
         token = response['GetUserTokenResponseBody']['NonSecureToken']['Token']
-        getty_token = GettyToken.new(token)
-      end
-      getty_token
-    end
-
-    def self.renew(token_value, options = {})
-      getty_token = nil
-      token_value = token_value.value if token_value.class.equal?(self.class)
-
-      response = call_renew_token(token_value, options)
-
-      status = response['ResponseHeader']['Status']
-
-      if ['success', 'warning'].include?(status)
-        token = response['RenewTokenResponseBody']['Token']
         getty_token = GettyToken.new(token)
       end
       getty_token
@@ -81,24 +65,6 @@ module Security
       rescue RestClient::Exception => e
         #TODO: Log error
         raise TokenError.new("Error occurred retrieving authentication token for '#{username}'")
-      end
-    end
-
-    def self.call_renew_token(token, options)
-      begin
-        request = {
-          'RequestHeader' => header(options),
-          'RenewTokenRequestBody' => {
-            'SystemId' => self.auth_system_id,
-            'SystemPassword' => self.auth_system_password,
-            'Token' => token
-          }
-        }.to_json
-
-        return call_service(self.renew_token_endpoint, request)
-      rescue RestClient::Exception => e
-        #TODO: Log error
-        raise TokenError.new("Error occurred renewing authentication token")
       end
     end
 

@@ -7,7 +7,6 @@ Rails.application.config.to_prepare do
 
   Security::GettyToken.configure do |config|
     config.get_user_token_endpoint = Rails.application.config.endpoints[:get_user_token]
-    config.renew_token_endpoint = Rails.application.config.endpoints[:renew_token]
     config.auth_system_id = esp_system_id
     config.auth_system_password = auth_system_password
   end

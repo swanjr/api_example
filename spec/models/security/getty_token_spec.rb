@@ -2,29 +2,6 @@ require 'security/getty_token_analyzer'
 require 'models/security/getty_token'
 
 describe Security::GettyToken do
-  before(:context) do
-    ## Store original config for later restoration. Need because test tokens use 
-    #@original_config = {}
-    #@original_config[:get_user_token_endpoint] = described_class.get_user_token_endpoint
-    #@original_config[:renew_token_endpoint] = described_class.renew_token_endpoint
-    #@original_config[:auth_system_id] = described_class.auth_system_id
-    #@original_config[:auth_system_password] = described_class.auth_system_password
-    #described_class.configure do |config|
-      #config.get_user_token_endpoint = 'www.server.com/api/SecurityToken/GetUserToken'
-      #config.renew_token_endpoint = 'www.server.com/api/SecurityToken/RenewToken'
-      #config.auth_system_id = '100'
-      #config.auth_system_password = 'system_password'
-    #end
-  end
-
-  after(:context) do
-    # Restore original config
-    #@original_config[:get_user_token_endpoint] = described_class.get_user_token_endpoint
-    #@original_config[:renew_token_endpoint] = described_class.renew_token_endpoint
-    #@original_config[:auth_system_id] = described_class.auth_system_id
-    #@original_config[:auth_system_password] = described_class.auth_system_password
-  end
-
   let(:valid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9PQo=|3' }
   let(:expired_token) { 'DX4IEPc1BSxCpWOsqPfehCXFDPmbPqZDQER1yxg0uxOrK/vTTeuBkvlFmqqFZ6XJ4Q0lzyPR563S+KTQCKWb2egkYoJ03CX4U5JZek40eBaOn+HWEPut63GnFYi7tmgCpx2A0z8llOmeF+vH8rSZjj0WfLDxQFU7n51SqwV6ZAY=|77u/NHJNL1MzYm51ZTlvUnlrNWdBaDMKMTUyMAo0NzUyOTM5CmpFTUhCUT09CkFBQUFBQT09CjAKCjExLjIyLjMzLjQ0CjAKCkFCQ01OZz09Cgo=|3' }
   let(:invalid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9Pqo=|3' }
@@ -183,73 +160,4 @@ describe Security::GettyToken do
     end
   end
 
-  describe "#renew" do
-    context "when token is renewable" do
-
-      before(:example) do
-        response = {'ResponseHeader' => { 'Status' => 'success' },
-                      'RenewTokenResponseBody' => {
-                        'Token' => valid_token
-                      }
-                    }.to_json
-        allow(RestClient).to receive(:post).and_return(response)
-      end
-
-      it "calls the RenewToken service" do
-        request = {
-          'RequestHeader' => {
-            'Token' => '',
-            'CoordinationId' => ''
-          },
-          'RenewTokenRequestBody' => {
-            'SystemId' => described_class.auth_system_id,
-            'SystemPassword' => described_class.auth_system_password,
-            'Token' => expired_token
-          }
-        }.to_json
-        expect(RestClient).to receive(:post).with(described_class.renew_token_endpoint, 
-                                                  request, {'Content-Type' => 'application/json'})
-
-        Security::GettyToken.renew(expired_token)
-      end
-
-      it "returns a valid GettyToken" do
-        token = Security::GettyToken.renew(expired_token)
-
-        expect(token.account_id).to eq(account_id)
-        expect(token.value).to eq(valid_token)
-        expect(token.expires_at).to eq(expires_at)
-      end
-
-      it "returns a valid GettyToken even if the expired token is a GettyToken object" do
-        token = Security::GettyToken.renew(Security::GettyToken.new(expired_token))
-
-        expect(token.account_id).to eq(account_id)
-        expect(token.value).to eq(valid_token)
-        expect(token.expires_at).to eq(expires_at)
-      end
-    end
-
-    context "when token is not renewable" do
-      before(:example) do
-        response = {
-          "ResponseHeader" => { "Status" => "failed" }
-        }.to_json
-        allow(RestClient).to receive(:post).and_return(response)
-      end
-
-      it "returns nil" do 
-        token = Security::GettyToken.renew(expired_token)
-
-        expect(token).to be(nil)
-      end
-
-      it "throws a TokenException if an error occurs while calling GetUserToken" do
-        allow(RestClient).to receive(:post).and_raise(RestClient::Exception.new('Service error'))
-
-        expect{ Security::GettyToken.renew('') }.to raise_error(Security::TokenError)
-      end
-
-    end
-  end
 end
