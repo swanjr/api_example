@@ -41,6 +41,10 @@ module Security
         @analyzer.system_id == @auth_system_id
     end
 
+    def invalid?
+      !valid?
+    end
+
     def expired?
       @analyzer.expires_at < DateTime.now
     end

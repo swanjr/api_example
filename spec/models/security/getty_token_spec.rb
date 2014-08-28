@@ -2,6 +2,15 @@ require 'security/getty_token_analyzer'
 require 'models/security/getty_token'
 
 describe Security::GettyToken do
+  before(:context) do
+    #This config may be overwitten when running all rspec by the global test config.
+    described_class.configure do |config|
+      config.get_user_token_endpoint = 'www.server.com/api/SecurityToken/GetUserToken'
+      config.auth_system_id = '100'
+      config.auth_system_password = 'system_password'
+    end
+  end
+
   let(:valid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9PQo=|3' }
   let(:expired_token) { 'DX4IEPc1BSxCpWOsqPfehCXFDPmbPqZDQER1yxg0uxOrK/vTTeuBkvlFmqqFZ6XJ4Q0lzyPR563S+KTQCKWb2egkYoJ03CX4U5JZek40eBaOn+HWEPut63GnFYi7tmgCpx2A0z8llOmeF+vH8rSZjj0WfLDxQFU7n51SqwV6ZAY=|77u/NHJNL1MzYm51ZTlvUnlrNWdBaDMKMTUyMAo0NzUyOTM5CmpFTUhCUT09CkFBQUFBQT09CjAKCjExLjIyLjMzLjQ0CjAKCkFCQ01OZz09Cgo=|3' }
   let(:invalid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9Pqo=|3' }
@@ -146,6 +155,19 @@ describe Security::GettyToken do
     end
   end
 
+  describe "#invalid?" do
+    let(:getty_token) { described_class.new(valid_token) }
+
+    it "returns false when token is valid" do
+      expect(getty_token.invalid?).to be(false)
+    end
+
+    it "returns true when token is not valid" do
+      allow(getty_token).to receive(:valid?).and_return(false)
+      expect(getty_token.invalid?).to be(true)
+    end
+  end
+
   describe "#expired?" do
     it "return true when token is expired" do
       allow(@analyzer).to receive(:expires_at).and_return(1.year.ago)
@@ -159,5 +181,4 @@ describe Security::GettyToken do
       expect(getty_token.expired?).to be(false)
     end
   end
-
 end

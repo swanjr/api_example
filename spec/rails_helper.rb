@@ -15,9 +15,6 @@ WebMock.disable_net_connect!(allow_localhost: true)
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
-# Include examples from anywhere.
-#Dir[Rails.root.join("spec/**/*examples.rb")].each { |f| require f }
-
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.verify_doubled_constant_names = true

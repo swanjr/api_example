@@ -27,9 +27,9 @@ FactoryGirl.define do
   end
 
   factory :token_user, class: User do
-    username 'a_user'
+    username 'matt@punchstock.com'
     account_id '314'
-    email 'a_user@getty.com'
+    email 'matt@punchstock.com'
   end
 
 end

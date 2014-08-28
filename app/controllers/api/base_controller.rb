@@ -28,6 +28,8 @@ class API::BaseController < ActionController::Metal
   include TokenAuthentication # Prepended before StoreRequestInfo
   include UseSsl
   include PaperTrailMetadata
+  include TokenAuthentication
+  include StoreRequestInfo
 
   protect_from_forgery with: :null_session
 
