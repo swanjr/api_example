@@ -16,7 +16,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 # Include active_support functionality for Rails helper methods
-require 'active_support/core_ext'
+require 'active_support/all'
 
 RSpec.configure do |config|
   # The settings below are suggested to provide a good initial experience
