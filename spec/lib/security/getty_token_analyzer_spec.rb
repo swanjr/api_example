@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 require 'security/errors'
 require 'security/getty_token_analyzer'
 

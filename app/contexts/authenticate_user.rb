@@ -22,7 +22,7 @@ class AuthenticateUser
 
 
   ## Role Classes ##
-  class AuthorizedUser < User
+  class AuthorizedUser < ::User
     attr_accessor :token
 
     def self.create(credentials)
