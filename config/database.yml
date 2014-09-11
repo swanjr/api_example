@@ -2,7 +2,7 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: true
-  database: esp_submission_development
+  database: esp_development
   pool: 80
   username: root
   password:
@@ -16,7 +16,7 @@ test: &test
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: esp_submission_test
+  database: esp_test
   pool: 10
   username: root
   password:
@@ -27,7 +27,7 @@ test01:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: esp_submission_test
+  database: esp_test
   pool: 10
   username: root
   password:
@@ -35,7 +35,7 @@ candidate:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: esp_submission_test
+  database: esp_test
   pool: 10
   username: root
   password:
@@ -43,7 +43,7 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: esp_submission_development
+  database: esp_development
   pool: 10
   username: root
   password:
