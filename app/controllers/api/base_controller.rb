@@ -20,18 +20,12 @@ class API::BaseController < ActionController::Metal
 
   ActiveSupport.run_load_hooks(:action_controller, self)
 
-  # Responder raises resource errors as a API::ValidationError
-  self.responder = Responder::Master
-
   # Concerns
-  include StoreRequestInfo    # Prepended before action
-  include TokenAuthentication # Prepended before StoreRequestInfo
   include UseSsl
-  include PaperTrailMetadata
+  include TokenAuthentication     # Prepended to guarantee it is first
+  include StoreUserRequestInfo    # Before action to store user info
 
   protect_from_forgery with: :null_session
-
-  respond_to :json
 
   # Disabled default automatic param parsing and overrode default params method.
   # Doing this to we aren't parsing the json multiple times for controllers using Representable.
@@ -41,9 +35,20 @@ class API::BaseController < ActionController::Metal
 
   private
 
+  def render_model(model, status = :ok)
+    if model.errors.empty?
+      render json: model, status: status
+    else
+      raise API::ValidationError.new.add_model_messages(model)
+    end
+  end
+
   def parse_json_request
+    return {} if request.raw_post.blank?
+
     data = ActiveSupport::JSON.decode(request.raw_post)
     data = {:_json => data} unless data.is_a?(Hash)
+
     ActionDispatch::Request::Utils.deep_munge(data).with_indifferent_access
   end
 end

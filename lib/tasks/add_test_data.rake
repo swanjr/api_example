@@ -73,7 +73,7 @@ namespace :test do
      ]
      sample_users.each do |user|
        new_user = User.create(:username => user[0],
-                              :account_id => user[1])
+                              :account_number => user[1])
 
        unless new_user.new_record?
 

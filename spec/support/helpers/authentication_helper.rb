@@ -9,7 +9,7 @@ module AuthenticationHelper
     attributes = FactoryGirl.attributes_for(:token_user)
 
     user = User.create_with(attributes).
-      find_or_create_by!(account_id: attributes[:account_id])
+      find_or_create_by!(account_number: attributes[:account_number])
     #user.add_role(role)
     user
   end

@@ -22,6 +22,17 @@ RSpec.configure do |config|
     mocks.verify_doubled_constant_names = true
   end
 
+  config.before do |example|
+    return unless example.metadata.present?
+    WebMock.allow_net_connect! unless ENV['ISOLATE'] == 'true'
+  end
+
+  config.before do |example|
+    if ENV['SHOW_ERROR'] == 'true'
+      Rails.application.config.action_dispatch.show_exceptions = false
+    end
+  end
+
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.
@@ -38,7 +49,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   # Add rails specific spec helpers
-  config.include ShowExceptionsHelper, type: :request
   config.include Response::JsonHelper, type: :request
   config.include AuthenticationHelper, type: :request
+  config.include Rack::Matchers, type: :request
 end

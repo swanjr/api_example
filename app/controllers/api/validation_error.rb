@@ -1,16 +1,15 @@
 module API
-  class ValidationError < API::BaseError
+  class ValidationError < API::UnprocessableEntityError
     attr_reader :messages
 
-    def initialize(developer_message)
-      super(developer_message)
-      @http_status_code = 422
-      @code = :validation_error
+    def initialize(developer_message = "Failed with validation errors.", code = :validation_error)
+      super(developer_message, code)
       @messages = []
     end
 
     def add_message(resource, field_name, message)
       @messages << FieldError.new(resource, field, message)
+      self
     end
 
     def add_model_messages(model)
@@ -18,6 +17,7 @@ module API
       model.errors.each do |field, message|
         @messages << FieldError.new(resource, field, message)
       end
+      self
     end
 
     class FieldError

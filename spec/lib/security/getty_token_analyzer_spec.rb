@@ -1,13 +1,10 @@
 require 'spec_helper'
 
-require 'security/errors'
 require 'security/getty_token_analyzer'
 
 describe Security::GettyTokenAnalyzer do
   before(:context) do
-    described_class.configure do |config|
-      config.sts_public_key = 'rmxWUDxTISNTbVte2csm5alfXNEoFQo9NcdKriIVmk11QhPbNgIvTuQg2o+7MleCLcydC7PMpxIwTd7ZNiQtbivd2N\/pAsLjjhKNDNo9GFd4EhWK6T1Lq3Fm+mWYY2sbtNc4bPm158U9vVDKEeHLY4y01KoHZ7YTzH2tzA4XwEU='
-    end
+    described_class.sts_public_key = 'rmxWUDxTISNTbVte2csm5alfXNEoFQo9NcdKriIVmk11QhPbNgIvTuQg2o+7MleCLcydC7PMpxIwTd7ZNiQtbivd2N\/pAsLjjhKNDNo9GFd4EhWK6T1Lq3Fm+mWYY2sbtNc4bPm158U9vVDKEeHLY4y01KoHZ7YTzH2tzA4XwEU='
   end
 
   let(:valid_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9PQo=|3' }
@@ -33,8 +30,8 @@ describe Security::GettyTokenAnalyzer do
         expect(analyzer.system_id).to eq('100')
       end
 
-      it "parses account_id from token" do
-        expect(analyzer.account_id).to eq('314')
+      it "parses account_number from token" do
+        expect(analyzer.account_number).to eq('314')
       end
 
       it "parses expired_at from token" do

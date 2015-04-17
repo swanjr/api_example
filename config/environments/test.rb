@@ -2,10 +2,11 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # ESP enterprise id prefix
-  config.enterprise_id_prefix = "ESPID:TEST:"
+  config.enterprise_id_prefix = "ESPIDTEST"
 
   # Third party endpoints
-  config.endpoints[:get_user_token] = "http://entsvca.candidate-gettyimages.com/SecurityToken/json/3.0/GetUserToken"
+  config.endpoints[:get_system_token] = "http://entsvca.candidate-gettyimages.com/SecurityToken/json/3.0/GetSystemToken"
+  config.endpoints[:renew_token] = "http://entsvca.candidate-gettyimages.com/SecurityToken/json/3.0/RenewToken"
   config.endpoints[:event] = "http://eventsvc.test.gettyimages.com/Event/json/2.0"
   config.endpoints[:dsa] = "http://dsa-candidate.gettyimages.io/assets"
 

@@ -31,7 +31,8 @@ describe "SubmissionBatches API V1" do
     context 'with an invalid request' do
       before(:example) do
         invalid_params = submission_attrs
-        invalid_params.delete(:media_type)
+        invalid_params.delete(:allowed_contribution_type)
+
         post '/api/v1/submission_batches',
           invalid_params.to_json, http_authorization_header
       end
@@ -45,5 +46,4 @@ describe "SubmissionBatches API V1" do
       end
     end
   end
-
 end

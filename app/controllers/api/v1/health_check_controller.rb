@@ -18,21 +18,21 @@ class API::V1::HealthCheckController < API::BaseController
   def run_diagnostics
     results = {}
 
-    ## RDS
-    #begin
-      #Rails.logger.info("Checking RDS")
-      #SubmissionBatch.last
-      #results[:rds] = success
-    #rescue Exception => e
-      #results[:rds] = error(e)
-    #end
+    # MySQl Database
+    begin
+      Rails.logger.info("Checking Database")
+      SubmissionBatch.last
+      results[:database] = success
+    rescue Exception => e
+      results[:database] = error(e)
+    end
 
-    # STS Check
+    # STS
     begin
       Rails.logger.info("Checking STS")
-      Security::GettyToken.create('matt@punchstock.com', 'Ph0t0$', request.remote_ip)
+      Security::GettyToken.create_system_token
       results[:sts] = success
-    rescue Security::TokenError => e
+    rescue Timeout::Error, StandardError => e
       results[:sts] = error(e)
     end
 

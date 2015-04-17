@@ -1,13 +1,11 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.0.beta1'
+gem 'rails', '4.2.1'
 gem 'puma'
-gem 'responders'
 gem 'representable'
 gem 'rest-client'
-gem 'paper_trail'
+gem 'request_store'
 gem 'ffprober', path: 'vendor/bundle/ffprober'
 gem 'fog'
 gem 'unf' # Required for fog
@@ -22,7 +20,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '~> 3.0.0'
+  gem 'rspec-rails', '~> 3.2.0'
   gem 'pry-rails'
 end
 
