@@ -6,6 +6,7 @@ require 'active_record_helper'
 
 require 'rspec/rails'
 require 'webmock/rspec'
+
 WebMock.disable_net_connect!(allow_localhost: true)
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -22,14 +23,15 @@ RSpec.configure do |config|
     mocks.verify_doubled_constant_names = true
   end
 
-  config.before do |example|
-    return unless example.metadata.present?
-    WebMock.allow_net_connect! unless ENV['ISOLATE'] == 'true'
-  end
-
-  config.before do |example|
-    if ENV['SHOW_ERROR'] == 'true'
-      Rails.application.config.action_dispatch.show_exceptions = false
+  # Always run request specs first so non-request spec changes to class configurations
+  # don't override out global test environment class configurations. Request specs and non-request
+  # specs are still randomized in their own group.
+  config.register_ordering(:global) do |items|
+    items.sort_by do |group|
+      case group.metadata[:type]
+      when :request then rand(1..25)
+      else rand(26..50)
+      end
     end
   end
 
@@ -49,7 +51,9 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   # Add rails specific spec helpers
+  config.include Webmock::IsolationHelper, type: :request
+  config.include ShowErrorsHelper, type: :request
   config.include Response::JsonHelper, type: :request
   config.include AuthenticationHelper, type: :request
-  config.include Rack::Matchers, type: :request
+  config.include Rack::MatchersHelper, type: :request
 end

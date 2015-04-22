@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "SubmissionBatches API V1" do
+describe "SubmissionBatches API V1", :integration do
   let!(:user) { authorize_as(:uploader) }
   let(:submission_attrs) { FactoryGirl.attributes_for(:submission_batch) }
 

@@ -1,10 +1,14 @@
 require 'rails_helper'
 
-describe API::V1::HealthCheckController, :integration do
+describe API::V1::HealthCheckController do
 
   describe "GET 'show'" do
-    it "returns a JSON hash containing the database's status" do
+    before do
+      stub_for_isolation(:post,
+                         Security::GettyToken.config[:get_system_token_endpoint])
+    end
 
+    it "returns a JSON hash containing the database's status" do
       get '/api/v1/health_check', nil
 
       expect(response).to have_status(:ok)

@@ -2,17 +2,17 @@ class API::V1::HealthCheckController < API::BaseController
   skip_before_action :restrict_access, only: [:show]
 
   def show
-    render :json => run_diagnostics
+    render json: run_diagnostics
   end
 
   private
 
   def success
-    { :status => 'ok' }
+    { status: 'ok' }
   end
 
   def error(e)
-    { :status => 'error', :message => e.message }
+    { status: 'error', message: e.message }
   end
 
   def run_diagnostics

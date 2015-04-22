@@ -45,9 +45,6 @@ module EspAPI
     config.middleware.delete "Rack::MethodOverride"
     config.middleware.delete "ActionDispatch::ParamsParser"
 
-    # Add middleware
-    #config.middleware.use "ThreadCurrentCleaner"
-
     # Configure exceptions app to handle all uncaught errors
     config.exceptions_app = lambda do |env|
       ExceptionRenderer.new.call(env)

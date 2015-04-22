@@ -5,6 +5,11 @@ module StoreUserRequestInfo
     before_action :store_info
   end
 
+  def store(symbol, value)
+    # Use RequestStore gem to store in Thread.current
+    RequestStore.store[symbol] = value
+  end
+
   private
 
   def store_info
@@ -17,10 +22,4 @@ module StoreUserRequestInfo
     store :remote_ip, request.remote_ip
     store :user_agent, request.user_agent
   end
-
-  def store(symbol, value)
-    # Use RequestStore gem to store in Thread.current
-    RequestStore.store[symbol] = value
-  end
-
 end
