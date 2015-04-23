@@ -4,7 +4,7 @@ require 'yaml'
 require 'active_record'
 require 'shoulda-matchers'
 
-connection_info = YAML.load_file("config/database.yml")["test"]
+connection_info = YAML.load_file('config/database.yml')['test']
 ActiveRecord::Base.establish_connection(connection_info)
 
 # Checks for pending migrations before tests are run.

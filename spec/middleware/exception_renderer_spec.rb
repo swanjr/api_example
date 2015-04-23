@@ -11,13 +11,13 @@ describe ExceptionRenderer, type: :none do
   let(:exception_renderer) { ExceptionRenderer.new }
 
   it "renders the exception passed in if it is a child of API::BaseError" do
-    env = {'action_dispatch.exception' => API::BaseError.new('Base error', 600, :error_code)}
+    env = {'action_dispatch.exception' => API::BaseError.new('Base error', 600)}
     result = exception_renderer.call(env)
 
     expect(result[0]).to eq(600)
     expect(result[1]).to eq({'Content-Type' => 'application/vnd.getty.error+json'})
     expect(JSON.parse(result[2][0])).to match(
-      {'message' => 'Base error', 'occurred_at' => 'now', 'http_status_code' => 600, 'code' => 'error_code'})
+      {'message' => 'Base error', 'occurred_at' => 'now', 'http_status_code' => 600, 'code' => 'internal_server_error'})
   end
 
   it "converts a recognized rails 4xx error to an API bad request error" do

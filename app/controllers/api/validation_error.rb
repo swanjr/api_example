@@ -3,8 +3,9 @@ module API
     attr_reader :messages
 
     def initialize(developer_message = "Failed with validation errors.", code = :validation_error)
-      super(developer_message, code)
+      super(developer_message)
       @messages = []
+      @code = code
     end
 
     def add_message(resource, field_name, message)
