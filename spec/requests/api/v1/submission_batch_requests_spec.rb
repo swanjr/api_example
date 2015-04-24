@@ -18,13 +18,6 @@ describe "SubmissionBatches API V1", :integration do
 
       it "returns created submission" do
         expect(json['id']).not_to be_nil
-        expect(json['owner_id']).to eq(user.id)
-        expect(json['name']).to eq(submission_attrs[:name])
-        expect(json['media_type']).to eq(submission_attrs[:media_type])
-        expect(json['asset_family']).to eq(submission_attrs[:asset_family])
-        expect(json['istock']).to eq(submission_attrs[:istock])
-        expect(json['status']).to eq('pending')
-        expect(json['last_contribution_submitted_at']).to be_nil
       end
     end
 

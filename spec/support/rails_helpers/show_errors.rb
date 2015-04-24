@@ -4,7 +4,7 @@
 #
 # A type of :request means this will only be run for request specs or 
 # when the entire suite is run.
-module ShowErrorsHelper
+module ShowErrors
 
   RSpec.configure do |config|
     #Disable application global error handler and show errors in rspecs if SHOW_ERRORS is enabled.

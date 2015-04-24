@@ -6,6 +6,8 @@ class SubmissionBatch < ActiveRecord::Base
   validates :allowed_contribution_type, presence: true
   validates :status, presence: true
 
+  belongs_to :user, foreign_key: :owner_id
+
   def self.statuses
     STATUSES
   end

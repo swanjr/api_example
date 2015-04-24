@@ -5,8 +5,3 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-
-ContributionType.create([ {name: 'getty_creative_video'},
-                          {name: 'getty_editorial_video'},
-                          {name: 'istock_creative_video'}
-])

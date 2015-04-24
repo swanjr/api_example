@@ -9,14 +9,8 @@ require 'webmock/rspec'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
-# Requires supporting ruby files with custom matchers and macros, etc, in
-# spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
-# run as spec files by default. This means that files in spec/support that end
-# in _spec.rb will both be required and run as specs, causing the specs to be
-# run twice. It is recommended that you do not name files matching this glob to
-# end with _spec.rb. You can configure this pattern with with the --pattern
-# option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+# Include rails specific helpers
+Dir[Rails.root.join("spec/support/rails_helpers/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
@@ -51,9 +45,9 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   # Add rails specific spec helpers
-  config.include Webmock::IsolationHelper, type: :request
-  config.include ShowErrorsHelper, type: :request
-  config.include Response::JsonHelper, type: :request
-  config.include AuthenticationHelper, type: :request
-  config.include Rack::MatchersHelper, type: :request
+  config.include Webmock::Isolation, type: :request
+  config.include ShowErrors, type: :request
+  config.include Authentication, type: :request
+  config.include JSON::Response, type: :request
+  config.include Rack::Matchers, type: :request
 end

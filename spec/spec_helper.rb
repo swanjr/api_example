@@ -18,7 +18,11 @@
 # Include active_support functionality for Rails helper methods
 require 'active_support/all'
 
+# Include helpers that can be used across all specs.
+Dir[File.dirname(__FILE__) + "/support/helpers/*.rb"].each {|f| require f }
+
 RSpec.configure do |config|
+
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.
 
@@ -78,4 +82,7 @@ RSpec.configure do |config|
     # a real object. This is generally recommended.
     mocks.verify_partial_doubles = true
   end
+
+  # Helpers for any type of specs
+  config.include JSON::Matchers
 end

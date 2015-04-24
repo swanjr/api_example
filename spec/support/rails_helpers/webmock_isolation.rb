@@ -1,6 +1,6 @@
 # Example configuration in rails_helper.rb
 #
-# config.include Webmock::IsolationHelper, type: :request
+# config.include Webmock::Isolation, type: :request
 #
 # A type of :request means this will only be run for request specs or
 # when the entire suite is run.
@@ -9,7 +9,7 @@
 # unless isolation is enabled. Set environment variable ISOLATE to true to
 # enable isolation mode.
 module Webmock
-  module IsolationHelper
+  module Isolation
 
     RSpec.configure do |config|
       config.before do |example|
