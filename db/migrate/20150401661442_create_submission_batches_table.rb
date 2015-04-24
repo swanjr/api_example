@@ -1,4 +1,4 @@
-class CreateSubmissionBatches < ActiveRecord::Migration
+class CreateSubmissionBatchesTable < ActiveRecord::Migration
   def change
     create_table :submission_batches do |t|
       t.integer :owner_id, null: false

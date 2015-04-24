@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150401661442) do
+ActiveRecord::Schema.define(version: 20150424195116) do
 
   create_table "submission_batches", force: :cascade do |t|
     t.integer  "owner_id",                       limit: 4,   null: false
@@ -25,6 +25,18 @@ ActiveRecord::Schema.define(version: 20150401661442) do
 
   add_index "submission_batches", ["allowed_contribution_type"], name: "index_submission_batches_on_allowed_contribution_type", using: :btree
   add_index "submission_batches", ["owner_id"], name: "index_submission_batches_on_owner_id", using: :btree
+
+  create_table "uploaded_files", force: :cascade do |t|
+    t.string   "name",                   limit: 255,   null: false
+    t.string   "path",                   limit: 255
+    t.string   "upload_bucket",          limit: 255
+    t.string   "final_bucket",           limit: 255
+    t.text     "external_file_location", limit: 65535
+    t.string   "upload_id",              limit: 255
+    t.string   "mime_type",              limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "username",              limit: 255,                 null: false
