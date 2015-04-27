@@ -6,7 +6,7 @@ class CreateSubmissionBatchesTable < ActiveRecord::Migration
       t.string :allowed_contribution_type, null: false
       t.string :status, null: false
       t.datetime :last_contribution_submitted_at
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :submission_batches, :owner_id

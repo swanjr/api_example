@@ -13,20 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20150424195116) do
 
-  create_table "submission_batches", force: :cascade do |t|
-    t.integer  "owner_id",                       limit: 4,   null: false
-    t.string   "name",                           limit: 255, null: false
-    t.string   "allowed_contribution_type",      limit: 255, null: false
-    t.string   "status",                         limit: 255, null: false
-    t.datetime "last_contribution_submitted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "submission_batches", ["allowed_contribution_type"], name: "index_submission_batches_on_allowed_contribution_type", using: :btree
-  add_index "submission_batches", ["owner_id"], name: "index_submission_batches_on_owner_id", using: :btree
-
-  create_table "uploaded_files", force: :cascade do |t|
+  create_table "file_uploads", force: :cascade do |t|
     t.string   "name",                   limit: 255,   null: false
     t.string   "path",                   limit: 255
     t.string   "upload_bucket",          limit: 255
@@ -34,9 +21,22 @@ ActiveRecord::Schema.define(version: 20150424195116) do
     t.text     "external_file_location", limit: 65535
     t.string   "upload_id",              limit: 255
     t.string   "mime_type",              limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
+
+  create_table "submission_batches", force: :cascade do |t|
+    t.integer  "owner_id",                       limit: 4,   null: false
+    t.string   "name",                           limit: 255, null: false
+    t.string   "allowed_contribution_type",      limit: 255, null: false
+    t.string   "status",                         limit: 255, null: false
+    t.datetime "last_contribution_submitted_at"
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+  end
+
+  add_index "submission_batches", ["allowed_contribution_type"], name: "index_submission_batches_on_allowed_contribution_type", using: :btree
+  add_index "submission_batches", ["owner_id"], name: "index_submission_batches_on_owner_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "username",              limit: 255,                 null: false
@@ -45,8 +45,8 @@ ActiveRecord::Schema.define(version: 20150424195116) do
     t.string   "istock_username",       limit: 255
     t.string   "istock_account_number", limit: 255
     t.boolean  "enabled",               limit: 1,   default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
   end
 
   add_index "users", ["account_number"], name: "index_users_on_account_number", using: :btree

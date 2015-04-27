@@ -7,7 +7,7 @@ class CreateUsersTable < ActiveRecord::Migration
       t.string :istock_username
       t.string :istock_account_number
       t.boolean :enabled, default: false
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :users, :username

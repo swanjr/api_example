@@ -1,6 +1,6 @@
-class CreateUploadedFilesTable < ActiveRecord::Migration
+class CreateFileUploadsTable < ActiveRecord::Migration
   def change
-    create_table :uploaded_files do |t|
+    create_table :file_uploads do |t|
       t.string :name, null: false
       t.string :path
       t.string :upload_bucket
@@ -8,7 +8,7 @@ class CreateUploadedFilesTable < ActiveRecord::Migration
       t.text   :external_file_location
       t.string :upload_id
       t.string :mime_type
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

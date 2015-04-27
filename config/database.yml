@@ -1,52 +1,37 @@
-development:
+common: &common
   adapter: mysql2
   encoding: utf8
   reconnect: true
-  database: esp_development
   pool: 80
   username: root
   password:
   dead_connection_timeout: 10000000
   reaping_frequency: 10000000
 
+development:
+  <<: *common
+  database: esp_api_development
+  reaping_frequency: 10
+
 # Warning: The database defined as "test" will be erased and
 # # re-generated from your development database when you run "rake".
 # # Do not set this db to the same as development or production.
 test: &test
-  adapter: mysql2
-  encoding: utf8
-  reconnect: false
-  database: esp_test
+  <<: *common
+  database: esp_api_test
+  reaping_frequency: 10
   pool: 10
-  username: root
-  password:
 
 #These are here just so that we can precompile assets on a build box.
 #This will be replaced by the bootstrap script when we are running on #AWS
 test01:
-  adapter: mysql2
-  encoding: utf8
-  reconnect: false
-  database: esp_test
-  pool: 10
-  username: root
-  password:
+  <<: *test
+
 candidate:
-  adapter: mysql2
-  encoding: utf8
-  reconnect: false
-  database: esp_test
-  pool: 10
-  username: root
-  password:
+  <<: *test
+
 production:
-  adapter: mysql2
-  encoding: utf8
-  reconnect: false
-  database: esp_development
-  pool: 10
-  username: root
-  password:
+  <<: *test
 
 cucumber:
   <<: *test
