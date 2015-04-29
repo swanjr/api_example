@@ -1,5 +1,13 @@
 class API::V1::SubmissionBatchesController < API::BaseController
 
+  def index
+
+  end
+
+  def show
+    render_model SubmissionBatch.find(params[:id])
+  end
+
   def create
     submission = SubmissionBatch.new.extend(SubmissionBatchRepresenter)
     submission.from_json(request.raw_post,
@@ -10,7 +18,7 @@ class API::V1::SubmissionBatchesController < API::BaseController
     render_model submission, :created
   end
 
-  def show
-  end
+  def update
 
+  end
 end
