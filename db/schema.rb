@@ -11,7 +11,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150424195116) do
+ActiveRecord::Schema.define(version: 20150427132848) do
+
+  create_table "contributions", force: :cascade do |t|
+    t.integer  "owner_id",            limit: 4,   null: false
+    t.integer  "file_upload_id",      limit: 4,   null: false
+    t.integer  "submission_batch_id", limit: 4
+    t.integer  "contributable_id",    limit: 4,   null: false
+    t.string   "contributable_type",  limit: 255, null: false
+    t.string   "type",                limit: 255, null: false
+    t.string   "status",              limit: 255, null: false
+    t.string   "master_id",           limit: 255
+    t.string   "istock_master_id",    limit: 255
+    t.datetime "submitted_at"
+    t.datetime "published_at"
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "contributions", ["contributable_type", "contributable_id"], name: "index_contributions_on_contributable_type_and_contributable_id", using: :btree
+  add_index "contributions", ["file_upload_id"], name: "index_contributions_on_file_upload_id", using: :btree
+  add_index "contributions", ["istock_master_id"], name: "index_contributions_on_istock_master_id", using: :btree
+  add_index "contributions", ["master_id"], name: "index_contributions_on_master_id", using: :btree
+  add_index "contributions", ["owner_id"], name: "index_contributions_on_owner_id", using: :btree
+  add_index "contributions", ["status"], name: "index_contributions_on_status", using: :btree
+  add_index "contributions", ["submission_batch_id"], name: "index_contributions_on_submission_batch_id", using: :btree
+  add_index "contributions", ["submitted_at"], name: "index_contributions_on_submitted_at", using: :btree
+  add_index "contributions", ["type"], name: "index_contributions_on_type", using: :btree
 
   create_table "file_uploads", force: :cascade do |t|
     t.string   "name",                   limit: 255,   null: false
@@ -25,10 +51,12 @@ ActiveRecord::Schema.define(version: 20150424195116) do
     t.datetime "updated_at",                           null: false
   end
 
+  add_index "file_uploads", ["upload_id"], name: "index_file_uploads_on_upload_id", using: :btree
+
   create_table "submission_batches", force: :cascade do |t|
     t.integer  "owner_id",                       limit: 4,   null: false
-    t.string   "name",                           limit: 255, null: false
     t.string   "allowed_contribution_type",      limit: 255, null: false
+    t.string   "name",                           limit: 255, null: false
     t.string   "status",                         limit: 255, null: false
     t.datetime "last_contribution_submitted_at"
     t.datetime "created_at",                                 null: false
@@ -50,7 +78,9 @@ ActiveRecord::Schema.define(version: 20150424195116) do
   end
 
   add_index "users", ["account_number"], name: "index_users_on_account_number", using: :btree
+  add_index "users", ["enabled"], name: "index_users_on_enabled", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
 
-  add_foreign_key "submission_batches", "users", column: "owner_id"
+  add_foreign_key "contributions", "file_uploads", on_delete: :cascade
+  add_foreign_key "contributions", "submission_batches", on_delete: :nullify
 end

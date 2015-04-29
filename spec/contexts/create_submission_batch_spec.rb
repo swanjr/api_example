@@ -2,6 +2,7 @@ require 'active_record_helper'
 
 require 'contexts/create_submission_batch'
 
+require 'models/contribution'
 require 'models/submission_batch'
 
 describe CreateSubmissionBatch do
@@ -22,9 +23,9 @@ describe CreateSubmissionBatch do
     expect(submission_batch.name).to eq(name)
   end
 
-  it "sets submission batch status to pending" do
+  it "sets submission batch status to open" do
     submission_batch = described_class.create(SubmissionBatch.new)
-    expect(submission_batch.status).to eq('pending')
+    expect(submission_batch.status).to eq('open')
   end
 
   it "saves the submission batch" do
