@@ -22,12 +22,11 @@ end
 group :development, :test do
   gem 'rspec-rails', '~> 3.2.0'
   gem 'pry-rails'
+  gem 'factory_girl_rails'
 end
 
 group :test do
   gem 'shoulda', :require => false
-  gem 'faker'
-  gem 'factory_girl_rails'
   #gem 'psych', '>= 2.0.5'
   gem 'webmock'
 end

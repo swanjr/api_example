@@ -1,19 +1,28 @@
 class API::V1::SubmissionBatchesController < API::BaseController
 
   def index
+    results = Queries::SubmissionBatchSearch.new(limit).
+      for_fields(fields).
+      filter_by(filters).
+      sort_by(sort_order).
+      starting_at(offset).
+      search.extend(SubmissionBatchRepresenter.for_collection)
 
+    render json: results
   end
 
   def show
-    render_model SubmissionBatch.find(params[:id])
+    submission = SubmissionBatch.find(params[:id]).
+      extend(SubmissionBatchRepresenter)
+
+    render_model submission
   end
 
   def create
     submission = SubmissionBatch.new.extend(SubmissionBatchRepresenter)
-    submission.from_json(request.raw_post,
-                         owner_id: current_user.id)
+    submission.from_json(request.raw_post)
 
-    CreateSubmissionBatch.create(submission)
+    CreateSubmissionBatch.create(submission, current_user.id)
 
     render_model submission, :created
   end

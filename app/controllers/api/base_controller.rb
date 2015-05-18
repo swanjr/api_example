@@ -24,16 +24,17 @@ class API::BaseController < ActionController::Metal
   include UseSsl
   include TokenAuthentication     # Prepended to guarantee it is first
   include StoreUserRequestInfo    # Before action to store user info
+  include RestSearchParams
 
   protect_from_forgery with: :null_session
+
+  protected
 
   # Disabled default automatic param parsing and overrode default params method.
   # Doing this to we aren't parsing the json multiple times for controllers using Representable.
   def params
     @cached_params ||= super.merge(parse_json_request)
   end
-
-  private
 
   def render_model(model, status = :ok)
     if model.errors.empty?
@@ -42,6 +43,8 @@ class API::BaseController < ActionController::Metal
       raise API::ValidationError.new.add_model_messages(model)
     end
   end
+
+  private
 
   def parse_json_request
     return {} if request.raw_post.blank?

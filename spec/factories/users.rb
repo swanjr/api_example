@@ -1,9 +1,9 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 FactoryGirl.define do
   factory :user do
-    sequence(:username){ |n| "#{Faker::Internet.user_name}#{n}" }
-    account_number { Faker::Number.number(7) }
-    email { Faker::Internet.email }
+    sequence(:username) { |n| "john_doe_#{n}" }
+    sequence(:account_number) { |n| 1000 + n }
+    sequence(:email) { |n| "john_doe_#{n}@email.com" }
     enabled true
 
     #factory :super_admin do

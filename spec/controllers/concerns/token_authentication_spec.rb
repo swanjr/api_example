@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require 'controllers/concerns/token_authentication'
+
 describe TokenAuthentication do
   let(:user) { FactoryGirl.build(:user) }
 

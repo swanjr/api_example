@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe API::V1::HealthCheckController do
 
-  describe "GET 'show'" do
+  describe "GET#show /api/v1/health_check"do
     before do
       stub_for_isolation(:post,
                          Security::GettyToken.config[:get_system_token_endpoint])

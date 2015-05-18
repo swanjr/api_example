@@ -1,7 +1,9 @@
 class SubmissionBatch < ActiveRecord::Base
   STATUSES = ['open', 'closed']
-  private_constant :STATUSES
-
+  FILTER_MAPPINGS = { id: 'submission_batches.id', 
+                      name: 'submission_batches.name', 
+                      owner_name: 'users.username' }
+  private_constant :STATUSES, :FILTER_MAPPINGS
 
   belongs_to :owner, foreign_key: :owner_id, class_name: 'User'
   has_many :contributions
@@ -12,8 +14,6 @@ class SubmissionBatch < ActiveRecord::Base
     message: "%{value} is not a valid contribution type" }
   validates :status, inclusion: { in: STATUSES,
     message: "%{value} is not a valid status" }
-
-  belongs_to :user, foreign_key: :owner_id
 
   def self.statuses
     STATUSES

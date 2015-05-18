@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require 'controllers/concerns/store_user_request_info'
+
 describe StoreUserRequestInfo do
   let(:user) { FactoryGirl.build(:user) }
   let(:token) { 'token_str' }
