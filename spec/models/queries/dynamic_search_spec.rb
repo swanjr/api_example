@@ -242,6 +242,13 @@ describe Queries::DynamicSearch do
 
       expect(results.length).to be(4)
     end
+
+    it "set the limit equal to the default limit if the provided limit is less than 1" do
+      query = described_class.new(User, 0)
+      results = query.starting_at.search
+
+      expect(results.length).to be(2)
+    end
   end
 
   describe "#sort_by" do

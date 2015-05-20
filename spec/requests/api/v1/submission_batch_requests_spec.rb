@@ -20,7 +20,10 @@ describe "SubmissionBatches API V1" do
         http_authorization_header
 
       expect(response).to have_status(:ok)
-      expect(json.count).to eq(records.size)
+      expect(json['items'].size).to eq(records.size)
+      expect(json['offset']).to be(0)
+      expect(json['item_count']).to be(records.size)
+      expect(json['total_items']).to be(records.size)
     end
 
     it "returns sorted records according to the provided sort order" do
@@ -28,14 +31,16 @@ describe "SubmissionBatches API V1" do
         http_authorization_header
 
       expect(response).to have_status(:ok)
-      expect(json.count).to be(5)
-      expect(json[0]['name']).to eql(records[1].name)
-      expect(json[0]['id']).to eql(records[1].id)
-      expect(json[1]['name']).to eql(records[0].name)
-      expect(json[1]['id']).to eql(records[0].id)
-      expect(json[2]['name']).to eql(records[2].name)
-      expect(json[3]['name']).to eql(records[4].name)
-      expect(json[4]['name']).to eql(records[3].name)
+
+      results  = json['items']
+      expect(results.count).to eq(records.size)
+      expect(results[0]['name']).to eql(records[1].name)
+      expect(results[0]['id']).to eql(records[1].id)
+      expect(results[1]['name']).to eql(records[0].name)
+      expect(results[1]['id']).to eql(records[0].id)
+      expect(results[2]['name']).to eql(records[2].name)
+      expect(results[3]['name']).to eql(records[4].name)
+      expect(results[4]['name']).to eql(records[3].name)
     end
 
     it "returns the specified limit of records starting at the provided offset" do
@@ -43,10 +48,15 @@ describe "SubmissionBatches API V1" do
         http_authorization_header
 
       expect(response).to have_status(:ok)
-      expect(json.count).to be(3)
-      expect(json[0]['id']).to eql(records[2].id)
-      expect(json[1]['id']).to eql(records[3].id)
-      expect(json[2]['id']).to eql(records[4].id)
+
+      results  = json['items']
+      expect(json['offset']).to be(2)
+      expect(json['item_count']).to be(3)
+      expect(json['total_items']).to be(records.size)
+      expect(results.count).to be(3)
+      expect(results[0]['id']).to eql(records[2].id)
+      expect(results[1]['id']).to eql(records[3].id)
+      expect(results[2]['id']).to eql(records[4].id)
     end
 
 
@@ -55,10 +65,13 @@ describe "SubmissionBatches API V1" do
         http_authorization_header
 
       expect(response).to have_status(:ok)
-      expect(json.count).to be(5)
-      expect(json[0]['id']).to eql(records[0].id)
-      expect(json[0]['owner_username']).to eql(records[0].owner.username)
-      expect(json[0]['name']).to be_nil
+
+      results  = json['items']
+
+      expect(results.count).to be(5)
+      expect(results[0]['id']).to eql(records[0].id)
+      expect(results[0]['owner_username']).to eql(records[0].owner.username)
+      expect(results[0]['name']).to be_nil
     end
 
     it "returns a filtered list of records" do
@@ -66,8 +79,10 @@ describe "SubmissionBatches API V1" do
         http_authorization_header
 
       expect(response).to have_status(:ok)
-      expect(json.count).to be(2)
-      expect(json[0]['name']).to eql(records[1].name)
+
+      results  = json['items']
+      expect(results.count).to be(2)
+      expect(results[0]['name']).to eql(records[1].name)
     end
   end
 

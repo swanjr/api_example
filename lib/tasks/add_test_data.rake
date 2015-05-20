@@ -1,5 +1,3 @@
-require 'faker'
-
 namespace :test do
   namespace :data do
     #desc 'Creates test data for development purposes'

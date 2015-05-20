@@ -1,14 +1,15 @@
 class API::V1::SubmissionBatchesController < API::BaseController
 
   def index
-    results = Queries::SubmissionBatchSearch.new(limit).
+    query = Queries::SubmissionBatchSearch.new(limit).
       for_fields(fields).
       filter_by(filters).
       sort_by(sort_order).
-      starting_at(offset).
-      search.extend(SubmissionBatchRepresenter.for_collection)
+      starting_at(offset)
 
-    render json: results
+    results = query.search.extend(SubmissionBatchRepresenter.for_collection)
+
+    render_models results, query.offset, query.total_records
   end
 
   def show

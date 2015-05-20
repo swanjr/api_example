@@ -1,5 +1,7 @@
 module Queries
   class DynamicSearch
+    attr_reader :limit, :offset
+
     def self.default_limit
       20
     end
@@ -17,14 +19,13 @@ module Queries
     def initialize(provided_model = nil, limit = nil)
       @search_model = provided_model || search_model
       @order = "#{qualify_field('id')} asc"
-      limit ||= self.class.default_limit
-      @limit = limit.to_i <= self.class.max_limit ? limit.to_i : self.class.max_limit
+      @limit = valid_limit(limit)
       @offset = 0
       @fields = []
       @filters = []
     end
 
-    # Returns the configured search query relation.
+    # Returns the configured search query relation and the total record count.
     def search
       relation = search_model
 
@@ -32,8 +33,19 @@ module Queries
       filters.each do |filter|
         relation = relation.where(filter[:clause], filter[:value])
       end
+
       relation = relation.order(order) unless order.blank?
       relation.limit(limit).offset(offset)
+    end
+
+    # Returns the total records in the database matching the query.
+    def total_records
+      relation = search_model
+
+      filters.each do |filter|
+        relation = relation.where(filter[:clause], filter[:value])
+      end
+      relation.count
     end
 
     # Takes multiple hash args or an array of hashes.
@@ -64,7 +76,7 @@ module Queries
     end
 
     def starting_at(offset = 0)
-      @offset = offset
+      @offset = offset.to_i
 
       self
     end
@@ -90,7 +102,8 @@ module Queries
 
     protected
 
-    attr_accessor :fields, :filters, :order, :limit, :offset
+    attr_accessor :fields, :filters, :order
+    attr_writer :limit, :offset
 
     def process_fields(fields)
       fields.each_with_index do |field_name, index|
@@ -165,6 +178,20 @@ module Queries
 
     private
 
+    def valid_limit(limit)
+      limit = limit.to_i
+      if limit < 1
+        limit = self.class.default_limit
+      elsif limit > self.class.max_limit
+        limit = self.class.max_limit
+      end
+      limit
+    end
+
+    def handle_nested_array_arg(values)
+      (values.is_a?(Array) && values[0].is_a?(Array)) ? values[0] : values
+    end
+
     def check_operator(operator)
       raise InvalidOperatorError.new("Unrecognized operator '#{operator}'") unless
       valid_operator?(operator)
@@ -173,10 +200,6 @@ module Queries
     def check_field(field_name)
       raise InvalidFieldError.new("Unrecognized field '#{field_name}'") unless
       valid_field?(field_name)
-    end
-
-    def handle_nested_array_arg(values)
-      (values.is_a?(Array) && values[0].is_a?(Array)) ? values[0] : values
     end
   end
 end
