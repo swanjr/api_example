@@ -25,44 +25,7 @@ class API::BaseController < ActionController::Metal
   include TokenAuthentication     # Prepended to guarantee it is first
   include StoreUserRequestInfo    # Before action to store user info
   include RestSearchParams
+  include ModelRendering
 
   protect_from_forgery with: :null_session
-
-  protected
-
-  # Disabled default automatic param parsing and overrode default params method.
-  # Doing this to we aren't parsing the json multiple times for controllers using Representable.
-  def params
-    @cached_params ||= super.merge(parse_json_request)
-  end
-
-  def render_model(model, status = :ok)
-    if model.errors.empty?
-      render json: model, status: status
-    else
-      raise API::ValidationError.new.add_model_messages(model)
-    end
-  end
-
-  def render_models(model_list, offset, total_items = nil, status = :ok)
-    json = {
-      items: model_list.to_hash,
-      item_count: model_list.size,
-      offset: offset
-    }
-    json[:total_items] = total_items if total_items.present?
-
-    render json: json, status: status
-  end
-
-  private
-
-  def parse_json_request
-    return {} if request.raw_post.blank?
-
-    data = ActiveSupport::JSON.decode(request.raw_post)
-    data = {:_json => data} unless data.is_a?(Hash)
-
-    ActionDispatch::Request::Utils.deep_munge(data).with_indifferent_access
-  end
 end

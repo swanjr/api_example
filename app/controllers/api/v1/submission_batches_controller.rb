@@ -29,6 +29,11 @@ class API::V1::SubmissionBatchesController < API::BaseController
   end
 
   def update
+    submission = SubmissionBatch.find(params[:id]).extend(SubmissionBatchRepresenter)
+    submission.from_json(request.raw_post)
 
+    submission.save
+
+    render_model submission
   end
 end

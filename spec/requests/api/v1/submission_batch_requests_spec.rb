@@ -137,4 +137,51 @@ describe "SubmissionBatches API V1" do
       end
     end
   end
+
+  describe "PUT#update /api/v1/submission_batches/:id" do
+    let(:submission_attrs) { {
+      name: "John's Submission Batch",
+      status: 'closed',
+      owner_id: '-1',
+      allowed_contribution_type: 'istock_creative_video'
+    } }
+    let(:submission) { FactoryGirl.create(:submission_batch) }
+
+    context 'with valid data' do
+      it "returns the updated submission" do
+        put "/api/v1/submission_batches/#{submission.id}",
+          submission_attrs.to_json, http_authorization_header
+
+        expect(response).to have_status(:ok)
+        expect(json['id']).to be(submission.id)
+        expect(json['name']).to eql(submission_attrs[:name])
+        expect(json['status']).to eql(submission.status)
+        expect(json['owner_id']).to eql(submission.owner_id)
+        expect(json['allowed_contribution_type']).to eql(submission.allowed_contribution_type)
+      end
+    end
+
+    context 'with invalid data' do
+      it "returns an unprocessable_entity error message" do
+        invalid_params = submission_attrs
+        invalid_params[:name] = ''
+
+        put "/api/v1/submission_batches/#{submission.id}",
+          invalid_params.to_json, http_authorization_header
+
+        expect(response).to have_status(:unprocessable_entity)
+        expect(json['messages']).not_to be_empty
+      end
+    end
+
+    context "with an invalid submission id" do
+      it "returns a not found error message" do
+        put "/api/v1/submission_batches/0",
+          submission_attrs.to_json, http_authorization_header
+
+        expect(response).to have_status(:not_found)
+        expect(json['message']).not_to be_nil
+      end
+    end
+  end
 end
