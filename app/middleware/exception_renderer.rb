@@ -28,7 +28,7 @@ class ExceptionRenderer
       return API::BadRequestError.new(exception.message, status)
     else
       # Fall back to 500 error
-      return API::BaseError.new("Internal server error")
+      return API::BaseError.new("An unexpected error occurred.")
     end
   end
 

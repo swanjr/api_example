@@ -1,4 +1,4 @@
-class API::V1::HealthCheckController < API::BaseController
+class API::V2::HealthCheckController < API::BaseController
   skip_before_action :restrict_access, only: [:show]
 
   def show
@@ -18,7 +18,7 @@ class API::V1::HealthCheckController < API::BaseController
   def run_diagnostics
     results = {}
 
-    # MySQl Database
+    # MySQL Database
     begin
       Rails.logger.info("Checking Database")
       SubmissionBatch.last

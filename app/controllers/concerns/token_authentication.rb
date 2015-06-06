@@ -25,7 +25,13 @@ module TokenAuthentication
 
     token.gsub!(/'/, '')
 
-    getty_token = Security::GettyToken.new(token)
+    begin
+      getty_token = Security::GettyToken.new(token)
+    rescue Security::MalformedTokenError
+      # Check if token is URI encoded.
+      getty_token = Security::GettyToken.new(URI.decode(token))
+    end
+
     if getty_token.expired?
       getty_token = Security::GettyToken.renew(token)
     end

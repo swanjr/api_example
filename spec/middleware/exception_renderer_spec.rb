@@ -35,6 +35,6 @@ describe ExceptionRenderer, type: :none do
 
     expect(result[0]).to eq(500)
     expect(JSON.parse(result[2][0])).to match(
-      {'message' => 'Internal server error', 'occurred_at' => 'now', 'http_status_code' => 500, 'code' => 'internal_server_error'})
+      {'message' => 'An unexpected error occurred.', 'occurred_at' => 'now', 'http_status_code' => 500, 'code' => 'internal_server_error'})
   end
 end

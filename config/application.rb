@@ -37,7 +37,7 @@ module EspAPI
 
     # Remove middleware
     config.middleware.delete "Rack::Lock"
-    config.middleware.delete "ActionDispatch::Static"
+    #config.middleware.delete "ActionDispatch::Static"
     config.middleware.delete "ActionDispatch::Cookies"
     config.middleware.delete "ActionDispatch::Session::CookieStore"
     config.middleware.delete "ActionDispatch::Flash"

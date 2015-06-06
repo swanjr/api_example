@@ -1,4 +1,4 @@
-class API::V1::SubmissionBatchesController < API::BaseController
+class API::V2::SubmissionBatchesController < API::BaseController
 
   def index
     query = Queries::SubmissionBatchSearch.new(limit).

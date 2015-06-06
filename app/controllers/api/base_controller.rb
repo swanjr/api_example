@@ -1,8 +1,8 @@
 class API::BaseController < ActionController::Metal
   # Include only need modules from ActionController::Base
   ActionController::Base.without_modules(
-    'AbstractController::Translation', 
-    'AbstractController::AssetPaths', 
+    'AbstractController::Translation',
+    'AbstractController::AssetPaths',
     'ConditionalGet',
     'Helpers',
     'HideActions',

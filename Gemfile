@@ -10,7 +10,9 @@ gem 'ffprober', path: 'vendor/bundle/ffprober'
 gem 'fog'
 gem 'unf' # Required for fog
 gem 'getty-instrumentation', path: 'vendor/bundle/getty-instrumentation'
+gem 'swagger-blocks'
 
+# Database gems
 gem 'mysql2', platform: :ruby
 gem 'activerecord-jdbcmysql-adapter', platform: :jruby
 

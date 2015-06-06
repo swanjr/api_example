@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe "SubmissionBatches API V1" do
+describe "SubmissionBatches API V2" do
   let!(:owner) { authorize_as(:uploader) }
 
-  describe "GET#index /api/v1/submission_batches" do
+  describe "GET#index" do
     let(:records) { @records }
 
     before do
@@ -16,7 +16,7 @@ describe "SubmissionBatches API V1" do
     end
 
     it "returns all submissions" do
-      get "/api/v1/submission_batches", {},
+      get api_v2_submission_batches_path, {},
         http_authorization_header
 
       expect(response).to have_status(:ok)
@@ -27,7 +27,7 @@ describe "SubmissionBatches API V1" do
     end
 
     it "returns sorted records according to the provided sort order" do
-      get "/api/v1/submission_batches?sort=name,-id", {},
+      get "#{api_v2_submission_batches_path}?sort=name,-id", {},
         http_authorization_header
 
       expect(response).to have_status(:ok)
@@ -44,7 +44,7 @@ describe "SubmissionBatches API V1" do
     end
 
     it "returns the specified limit of records starting at the provided offset" do
-      get "/api/v1/submission_batches?limit=3&offset=2", {},
+      get "#{api_v2_submission_batches_path}?limit=3&offset=2", {},
         http_authorization_header
 
       expect(response).to have_status(:ok)
@@ -61,7 +61,7 @@ describe "SubmissionBatches API V1" do
 
 
     it "returns only the specified fields" do
-      get "/api/v1/submission_batches?fields=id,owner_username", {},
+      get "#{api_v2_submission_batches_path}?fields=id,owner_username", {},
         http_authorization_header
 
       expect(response).to have_status(:ok)
@@ -75,7 +75,7 @@ describe "SubmissionBatches API V1" do
     end
 
     it "returns a filtered list of records" do
-      get "/api/v1/submission_batches?filters=name=A*,id>#{records[0].id}", {},
+      get "#{api_v2_submission_batches_path}?filters=name=A*,id>#{records[0].id}", {},
         http_authorization_header
 
       expect(response).to have_status(:ok)
@@ -86,12 +86,12 @@ describe "SubmissionBatches API V1" do
     end
   end
 
-  describe "GET#show /api/v1/submission_batches/:id" do
+  describe "GET#show" do
     context 'when submission found' do
       let!(:submission) { FactoryGirl.create(:submission_batch, owner_id: owner.id) }
 
       it "returns created submission" do
-        get "/api/v1/submission_batches/#{submission.id}", {},
+        get api_v2_submission_batch_path(submission.id), {},
           http_authorization_header
 
         expect(response).to have_status(:ok)
@@ -102,7 +102,7 @@ describe "SubmissionBatches API V1" do
 
     context 'when submission not found' do
       it "does not return a submission" do
-        get "/api/v1/submission_batches/-1", {},
+        get api_v2_submission_batch_path(-1), {},
           http_authorization_header
 
         expect(response).to have_status(:not_found)
@@ -111,12 +111,12 @@ describe "SubmissionBatches API V1" do
     end
   end
 
-  describe "POST#create /api/v1/submission_batches" do
+  describe "POST#create" do
     let(:submission_attrs) { FactoryGirl.attributes_for(:submission_batch) }
 
     context 'with valid data' do
       it "returns created submission" do
-        post '/api/v1/submission_batches',
+        post api_v2_submission_batches_path,
           submission_attrs.to_json, http_authorization_header
 
         expect(response).to have_status(:created)
@@ -129,7 +129,7 @@ describe "SubmissionBatches API V1" do
         invalid_params = submission_attrs
         invalid_params.delete(:allowed_contribution_type)
 
-        post '/api/v1/submission_batches',
+        post api_v2_submission_batches_path,
           invalid_params.to_json, http_authorization_header
 
         expect(response).to have_status(:unprocessable_entity)
@@ -138,7 +138,7 @@ describe "SubmissionBatches API V1" do
     end
   end
 
-  describe "PUT#update /api/v1/submission_batches/:id" do
+  describe "PUT#update" do
     let(:submission_attrs) { {
       name: "John's Submission Batch",
       status: 'closed',
@@ -149,7 +149,7 @@ describe "SubmissionBatches API V1" do
 
     context 'with valid data' do
       it "returns the updated submission" do
-        put "/api/v1/submission_batches/#{submission.id}",
+        put api_v2_submission_batch_path(submission.id),
           submission_attrs.to_json, http_authorization_header
 
         expect(response).to have_status(:ok)
@@ -166,7 +166,7 @@ describe "SubmissionBatches API V1" do
         invalid_params = submission_attrs
         invalid_params[:name] = ''
 
-        put "/api/v1/submission_batches/#{submission.id}",
+        put api_v2_submission_batch_path(submission.id),
           invalid_params.to_json, http_authorization_header
 
         expect(response).to have_status(:unprocessable_entity)
@@ -176,7 +176,7 @@ describe "SubmissionBatches API V1" do
 
     context "with an invalid submission id" do
       it "returns a not found error message" do
-        put "/api/v1/submission_batches/0",
+        put api_v2_submission_batch_path(-1),
           submission_attrs.to_json, http_authorization_header
 
         expect(response).to have_status(:not_found)
