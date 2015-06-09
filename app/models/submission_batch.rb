@@ -1,9 +1,6 @@
 class SubmissionBatch < ActiveRecord::Base
   STATUSES = ['open', 'closed']
-  FILTER_MAPPINGS = { id: 'submission_batches.id', 
-                      name: 'submission_batches.name', 
-                      owner_name: 'users.username' }
-  private_constant :STATUSES, :FILTER_MAPPINGS
+  private_constant :STATUSES
 
   belongs_to :owner, foreign_key: :owner_id, class_name: 'User'
   has_many :contributions
