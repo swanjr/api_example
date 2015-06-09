@@ -1,9 +1,11 @@
 module RestSearchParams
   extend ActiveSupport::Concern
 
-  #Order of operators must be from complex to simple in the Regex.
-  FILTER_OPERATORS_REGEX = /<=|>=|!=|=|<>|>|</
-  private_constant :FILTER_OPERATORS_REGEX
+  mattr_writer :filter_operators
+
+  def self.filter_operators
+    @@filter_operators.blank? ? [] : @@filter_operators
+  end
 
   def fields
     fields = params[:fields]
@@ -20,12 +22,15 @@ module RestSearchParams
   def filters
     filters = []
 
-    unless params[:filters].blank?
+    operators = RestSearchParams.filter_operators
+
+    unless operators.empty? || params[:filters].blank?
       raw_filters = parse_filters(params[:filters])
 
       raw_filters.each do |filter|
         filter.strip!
-        field, operator, value = clean(filter.partition(FILTER_OPERATORS_REGEX))
+        field, operator, value = clean(filter.partition(
+          /#{operators.join('|')}/))
 
         filters << {
           field: field,

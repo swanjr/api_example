@@ -59,7 +59,6 @@ describe "SubmissionBatches API V2" do
       expect(results[2]['id']).to eql(records[4].id)
     end
 
-
     it "returns only the specified fields" do
       get "#{api_v2_submission_batches_path}?fields=id,owner_username", {},
         http_authorization_header
@@ -75,7 +74,7 @@ describe "SubmissionBatches API V2" do
     end
 
     it "returns a filtered list of records" do
-      get "#{api_v2_submission_batches_path}?filters=name=A*,id>#{records[0].id}", {},
+      get "#{api_v2_submission_batches_path}?filters=name~A*,id>#{records[0].id}", {},
         http_authorization_header
 
       expect(response).to have_status(:ok)

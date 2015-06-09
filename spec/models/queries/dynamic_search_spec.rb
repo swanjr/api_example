@@ -107,16 +107,16 @@ describe Queries::DynamicSearch do
     end
 
     it "can add a 'like' filter" do
-      partial = records.first.username[0, records.first.username.length-1]
-      filter = { field: 'username', operator: '=', value: "#{partial}%" }
+      partial = records.first.username[2, 5]
+      filter = { field: 'username', operator: '~', value: "__#{partial}%" }
       results = query.filter_by(filter).search
 
       expect(results.length).to be(5)
     end
 
     it "can add a 'not like' filter" do
-      partial = records.first.username[1, records.first.username.length]
-      filter = { field: 'username', operator: '!=', value: "%#{partial}" }
+      partial = records.first.username[2, 6]
+      filter = { field: 'username', operator: '!~', value: "%#{partial}" }
       results = query.filter_by(filter).search
 
       expect(results.length).to be(4)
@@ -173,7 +173,7 @@ describe Queries::DynamicSearch do
     end
 
     it "raises an error if the operator is invalid" do
-      filter = { field: 'id', operator: '~', value: 1 }
+      filter = { field: 'id', operator: '#', value: 1 }
       expect{query.filter_by(filter).search}.to raise_error(Queries::InvalidOperatorError)
     end
 

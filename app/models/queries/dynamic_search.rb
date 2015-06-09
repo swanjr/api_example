@@ -10,8 +10,9 @@ module Queries
       100
     end
 
+    #Order of operators should be from complex to simple.
     def self.valid_operators
-      ['<=','>=','=','<>','!=','>','<']
+      ['<=','>=','!=','=','<>','>','<','!~','~']
     end
 
     # The search model can be provided instead of subclassing
@@ -128,14 +129,14 @@ module Queries
         # Handle not equal alias
         operator = '<>' if operator == '!='
 
-        # Handle various value formats
+        # Handle various operator/value formats
         if value.is_a?(Array)
           operator = operator == '=' ? 'in (?)' : 'not in (?)'
+        elsif operator.include?('~')
+          operator = operator == '~' ? 'like ?' : 'not like ?'
         elsif value.nil? || value.to_s.downcase == 'null'
           value = nil
           operator = operator == '=' ? 'is ?' : 'is not ?'
-        elsif value.to_s.include?('%')
-          operator = operator == '=' ? 'like ?' : 'not like ?'
         else
           operator = "#{operator} ?"
         end

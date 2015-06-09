@@ -13,6 +13,10 @@ describe RestSearchParams do
 
   let(:controller) { FakeController.new }
 
+  before(:context) do
+    described_class.filter_operators = ['~','!=','=','>']
+  end
+
   describe "#fields" do
     it "returns the specified 'fields' param as an array" do
       allow(controller).to receive(:params).and_return({fields: 'name, id'})
@@ -48,40 +52,16 @@ describe RestSearchParams do
       expect(controller.filters.first).to match({field: 'name', operator: '=', value: 'John'})
     end
 
-    it "correctly parses '<=' filters" do
-      allow(controller).to receive(:params).and_return({filters: 'name<=John'})
-
-      expect(controller.filters.first).to match({field: 'name', operator: '<=', value: 'John'})
-    end
-
-    it "correctly parses '>=' filters" do
-      allow(controller).to receive(:params).and_return({filters: 'name>=John'})
-
-      expect(controller.filters.first).to match({field: 'name', operator: '>=', value: 'John'})
-    end
-
     it "correctly parses '!=' filters" do
       allow(controller).to receive(:params).and_return({filters: 'name!=John'})
 
       expect(controller.filters.first).to match({field: 'name', operator: '!=', value: 'John'})
     end
 
-    it "correctly parses '<>' filters" do
-      allow(controller).to receive(:params).and_return({filters: 'name<>John'})
-
-      expect(controller.filters.first).to match({field: 'name', operator: '<>', value: 'John'})
-    end
-
     it "correctly parses '>' filters" do
       allow(controller).to receive(:params).and_return({filters: 'name>John'})
 
       expect(controller.filters.first).to match({field: 'name', operator: '>', value: 'John'})
-    end
-
-    it "correctly parses '<' filters" do
-      allow(controller).to receive(:params).and_return({filters: 'name<John'})
-
-      expect(controller.filters.first).to match({field: 'name', operator: '<', value: 'John'})
     end
 
     it "correctly parses 'in value array' filters" do
@@ -91,11 +71,11 @@ describe RestSearchParams do
     end
 
     it "correctly parses 'partial match' filters" do
-      allow(controller).to receive(:params).and_return({filters: 'name=*doe,name=john*,full_name=*middle*'})
+      allow(controller).to receive(:params).and_return({filters: 'name~*doe,name~joh_,full_name~*middle*'})
 
-      expect(controller.filters[0]).to match({field: 'name', operator: '=', value: '%doe'})
-      expect(controller.filters[1]).to match({field: 'name', operator: '=', value: 'john%'})
-      expect(controller.filters[2]).to match({field: 'full_name', operator: '=', value: '%middle%'})
+      expect(controller.filters[0]).to match({field: 'name', operator: '~', value: '%doe'})
+      expect(controller.filters[1]).to match({field: 'name', operator: '~', value: 'joh_'})
+      expect(controller.filters[2]).to match({field: 'full_name', operator: '~', value: '%middle%'})
     end
   end
 
