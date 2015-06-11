@@ -3,7 +3,7 @@ class API::V2::Docs::SubmissionBatchAPI::Index
 
   swagger_path '/v2/submission_batches' do
     operation :get do
-      key :operationId, 'submission_batch_search'
+      key :operationId, 'search_submission_batches'
       key :description, 'Searches for submission batches matching the provided search criteria.'
       key :tags, [
         'Submission Batch API V2'
@@ -84,7 +84,7 @@ class API::V2::Docs::SubmissionBatchAPI::Index
       response :default do
         key :description, 'Unexpected error'
         schema do
-          key :'$ref', :Error
+          key :'$ref', :UnexpectedError
         end
       end
     end

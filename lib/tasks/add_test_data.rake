@@ -70,22 +70,43 @@ namespace :test do
        ['nzdollars','2935469']
      ]
      sample_users.each do |user|
-       new_user = User.create(:username => user[0],
-                              :account_number => user[1])
 
-       unless new_user.new_record?
-
-         #user = User.find_by(:username => new_user.username)
-
-         #if user.username == "matt@punchstock.com"
-           #user.add_role(:super_admin)
-           #user.add_role(:creative_review)
-           #user.add_role(:editorial_review)
-         #else
-           #user.add_role(:uploader)
-         #end
+       delete_user = User.find_by(:username => user[0])
+       if delete_user.present?
+         delete_user.destroy!
        end
 
+       if user[0] == "nzdollars"
+         # nzdollars is an iStock user
+         new_user = User.create!(
+           :username => user[0],
+           :email => user[0],
+           :istock_username => user[0],
+           :istock_account_number => '123456',
+           :account_number => user[1],
+           :enabled => true)
+       else
+         new_user = User.create!(
+           :username => user[0],
+           :email => user[0],
+           :account_number => user[1],
+           :enabled => true)
+
+         user = User.find_by(:username => new_user.username)
+
+         if user.username == "matt@punchstock.com"
+           #user.add_role(:super_admin)
+           #user.add_role(:needs_getty_creative_video_review)
+           #user.add_role(:needs_getty_editorial_video_review)
+           #user.add_role(:needs_getty_editorial_still_review)
+         elsif user.username == "gtorn_is_god"
+           # we need this user to exist without any roles for workflow tests
+           #user.roles.delete_all
+         else
+           #user.add_role(:getty_creative_video_uploader)
+           #user.add_role(:getty_editorial_video_uploader)
+         end
+       end
      end
     end
   end

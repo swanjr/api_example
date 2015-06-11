@@ -24,6 +24,7 @@ class ApidocsController < ActionController::Base
     API::V2::Docs::Models::SearchMetadata,
     API::V2::Docs::Models::SubmissionBatch,
     API::V2::Docs::SubmissionBatchAPI::Index,
+    API::V2::Docs::SubmissionBatchAPI::Show,
     self
   ].freeze
   def index
