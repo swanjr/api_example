@@ -33,7 +33,7 @@ module TokenAuthentication
     end
 
     if getty_token.expired?
-      getty_token = Security::GettyToken.renew(token)
+      getty_token = Security::GettyToken.renew(getty_token.value)
     end
 
     if getty_token.present? && getty_token.valid?

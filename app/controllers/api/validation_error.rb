@@ -15,8 +15,10 @@ module API
 
     def add_model_messages(model)
       resource = model.class.to_s
-      model.errors.each do |field, message|
-        @messages << FieldError.new(resource, field, message)
+      model.errors.keys.each do |attr|
+        model.errors[attr].each do |message|
+          @messages << FieldError.new(resource, attr, message)
+        end
       end
       self
     end

@@ -11,7 +11,8 @@ class API::BaseController < ActionController::Metal
     'Cookies',
     'Flash',
     'Streaming',
-    'HttpAuthentication::Digest::ControllerMethods.inspectuthentication::Basic::ControllerMethods',
+    'HttpAuthentication::Digest::ControllerMethods',
+    'HttpAuthentication::Basic::ControllerMethods',
     'AbstractController::Callbacks'
   ).each do |left|
     include left
@@ -26,6 +27,7 @@ class API::BaseController < ActionController::Metal
   include StoreUserRequestInfo    # Before action to store user info
   include RestSearchParams
   include ModelRendering
+  include ErrorMapper
 
   protect_from_forgery with: :null_session
 end
