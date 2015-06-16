@@ -11,11 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150427132848) do
+ActiveRecord::Schema.define(version: 20150616125453) do
 
   create_table "contributions", force: :cascade do |t|
     t.integer  "owner_id",            limit: 4,   null: false
-    t.integer  "file_upload_id",      limit: 4,   null: false
+    t.integer  "file_upload_id",      limit: 4
     t.integer  "submission_batch_id", limit: 4
     t.integer  "contributable_id",    limit: 4,   null: false
     t.string   "contributable_type",  limit: 255, null: false
@@ -53,6 +53,14 @@ ActiveRecord::Schema.define(version: 20150427132848) do
 
   add_index "file_uploads", ["upload_id"], name: "index_file_uploads_on_upload_id", using: :btree
 
+  create_table "roles", force: :cascade do |t|
+    t.string   "name",       limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
+
   create_table "submission_batches", force: :cascade do |t|
     t.integer  "owner_id",                       limit: 4,   null: false
     t.string   "allowed_contribution_type",      limit: 255, null: false
@@ -81,6 +89,16 @@ ActiveRecord::Schema.define(version: 20150427132848) do
   add_index "users", ["enabled"], name: "index_users_on_enabled", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
 
-  add_foreign_key "contributions", "file_uploads", on_delete: :cascade
+  create_table "users_roles", force: :cascade do |t|
+    t.integer "user_id", limit: 4, null: false
+    t.integer "role_id", limit: 4, null: false
+  end
+
+  add_index "users_roles", ["role_id"], name: "index_users_roles_on_role_id", using: :btree
+  add_index "users_roles", ["user_id"], name: "index_users_roles_on_user_id", using: :btree
+
+  add_foreign_key "contributions", "file_uploads", on_delete: :nullify
   add_foreign_key "contributions", "submission_batches", on_delete: :nullify
+  add_foreign_key "users_roles", "roles", on_delete: :cascade
+  add_foreign_key "users_roles", "users", on_delete: :cascade
 end
