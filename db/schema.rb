@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(version: 20150616125453) do
     t.integer  "owner_id",            limit: 4,   null: false
     t.integer  "file_upload_id",      limit: 4
     t.integer  "submission_batch_id", limit: 4
-    t.integer  "contributable_id",    limit: 4,   null: false
-    t.string   "contributable_type",  limit: 255, null: false
+    t.integer  "media_id",            limit: 4,   null: false
+    t.string   "media_type",          limit: 255, null: false
     t.string   "type",                limit: 255, null: false
     t.string   "status",              limit: 255, null: false
     t.string   "master_id",           limit: 255
@@ -29,10 +29,10 @@ ActiveRecord::Schema.define(version: 20150616125453) do
     t.datetime "updated_at",                      null: false
   end
 
-  add_index "contributions", ["contributable_type", "contributable_id"], name: "index_contributions_on_contributable_type_and_contributable_id", using: :btree
   add_index "contributions", ["file_upload_id"], name: "index_contributions_on_file_upload_id", using: :btree
   add_index "contributions", ["istock_master_id"], name: "index_contributions_on_istock_master_id", using: :btree
   add_index "contributions", ["master_id"], name: "index_contributions_on_master_id", using: :btree
+  add_index "contributions", ["media_type", "media_id"], name: "index_contributions_on_media_type_and_media_id", using: :btree
   add_index "contributions", ["owner_id"], name: "index_contributions_on_owner_id", using: :btree
   add_index "contributions", ["status"], name: "index_contributions_on_status", using: :btree
   add_index "contributions", ["submission_batch_id"], name: "index_contributions_on_submission_batch_id", using: :btree

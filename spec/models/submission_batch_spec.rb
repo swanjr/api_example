@@ -7,10 +7,8 @@ require 'models/submission_batch'
 
 describe SubmissionBatch do
 
-  describe "associations" do
-    it { is_expected.to belong_to(:owner) }
-    it { is_expected.to have_many(:contributions) }
-  end
+  it { is_expected.to belong_to(:owner) }
+  it { is_expected.to have_many(:contributions) }
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:owner_id) }

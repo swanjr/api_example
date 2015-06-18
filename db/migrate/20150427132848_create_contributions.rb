@@ -10,7 +10,7 @@ class CreateContributions < ActiveRecord::Migration
       t.belongs_to :submission_batch,
         index: true,
         foreign_key: {on_delete: :nullify}
-      t.belongs_to :contributable, null: false,
+      t.belongs_to :media, null: false,
         index: true,
         polymorphic: true
       t.string :type, null: false,

@@ -4,6 +4,10 @@ require 'models/user'
 
 describe User do
 
+  it "should have many roles" do
+    expect(described_class.reflect_on_association(:roles).macro).to eq(:has_and_belongs_to_many)
+  end
+
   describe "validations" do
     let(:user) { User.new(username: 'username', account_number: '100',
                      enabled: true, email: 'user@email.com') }

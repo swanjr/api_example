@@ -10,12 +10,12 @@ class Contribution < ActiveRecord::Base
 
   belongs_to :owner, foreign_key: :owner_id, class_name: 'User'
   belongs_to :file_upload
-  belongs_to :contributable, polymorphic: true
+  belongs_to :media, polymorphic: true
 
   validates :owner_id, presence: true
   validates :file_upload_id, presence: true
-  validates :contributable_id, presence: true
-  validates :contributable_type, presence: true
+  validates :media_id, presence: true
+  validates :media_type, presence: true
   validates :status, inclusion: { in: STATUSES,
     message: "%{value} is not a valid status" }
   validates :type, inclusion: { in: TYPES,
