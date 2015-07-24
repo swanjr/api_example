@@ -31,6 +31,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0'
   #gem 'psych', '>= 2.0.5'
   gem 'webmock'
+  gem 'simplecov', :require => false
 end
 
 # bundle exec rake doc:rails generates the API under doc/api.

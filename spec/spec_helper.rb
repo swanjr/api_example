@@ -15,6 +15,9 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+# Include simple_cov for generating coverage reports
+require 'simplecov'
+
 # Include active_support functionality for Rails helper methods
 require 'active_support/all'
 
@@ -22,7 +25,6 @@ require 'active_support/all'
 Dir[File.dirname(__FILE__) + "/support/helpers/*.rb"].each {|f| require f }
 
 RSpec.configure do |config|
-
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.
 
