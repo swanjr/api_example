@@ -6,10 +6,8 @@ describe StoreUserRequestInfo do
   let(:user) { FactoryGirl.build(:user) }
   let(:token) { 'token_str' }
 
-  controller(API::BaseController) do
+  controller(API::MetalController) do
     include StoreUserRequestInfo
-
-    skip_before_action :restrict_access
 
     def index
       render json: '{foo: "bar"}'

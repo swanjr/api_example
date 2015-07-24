@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe "SubmissionBatches API V2" do
-  let!(:owner) { authorize_as(:uploader) }
 
   describe "GET#index" do
+    let!(:owner) { user_authorized_to(:read_submission_batch) }
     let(:records) { @records }
 
     before do
@@ -86,6 +86,8 @@ describe "SubmissionBatches API V2" do
   end
 
   describe "GET#show" do
+    let!(:owner) { user_authorized_to(:read_submission_batch) }
+
     context 'when submission found' do
       let!(:submission) { FactoryGirl.create(:submission_batch, owner_id: owner.id) }
 
@@ -111,6 +113,7 @@ describe "SubmissionBatches API V2" do
   end
 
   describe "POST#create" do
+    let!(:owner) { user_authorized_to(:create_submission_batch) }
     let(:submission_attrs) { FactoryGirl.attributes_for(:submission_batch) }
 
     context 'with valid data' do
@@ -138,6 +141,7 @@ describe "SubmissionBatches API V2" do
   end
 
   describe "PUT#update" do
+    let!(:owner) { user_authorized_to(:update_submission_batch) }
     let(:submission_attrs) { {
       name: "John's Submission Batch",
       status: 'closed',

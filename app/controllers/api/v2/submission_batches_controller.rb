@@ -1,6 +1,8 @@
 class API::V2::SubmissionBatchesController < API::BaseController
 
   def index
+    authorize(:read_submission_batch)
+
     query = Queries::SubmissionBatchSearch.new(limit).
       for_fields(fields).
       filter_by(filters).
@@ -13,6 +15,8 @@ class API::V2::SubmissionBatchesController < API::BaseController
   end
 
   def show
+    authorize(:read_submission_batch)
+
     submission = SubmissionBatch.find(params[:id]).
       extend(SubmissionBatchRepresenter)
 
@@ -20,15 +24,19 @@ class API::V2::SubmissionBatchesController < API::BaseController
   end
 
   def create
+    authorize(:create_submission_batch)
+
     submission = SubmissionBatch.new.extend(SubmissionBatchRepresenter)
     submission.from_json(request.raw_post)
 
-    CreateSubmissionBatch.create(submission, current_user.id)
+    CreateSubmissionBatch.create!(submission, current_user.id)
 
     render_model submission, :created
   end
 
   def update
+    authorize(:update_submission_batch)
+
     submission = SubmissionBatch.find(params[:id]).extend(SubmissionBatchRepresenter)
     submission.from_json(request.raw_post)
 

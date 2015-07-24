@@ -2,7 +2,6 @@ class CreateSubmissionBatches < ActiveRecord::Migration
   def change
     create_table :submission_batches do |t|
       t.integer :owner_id, null: false,
-        index: true,
         foreign_key: { column: :owner_id, name: 'submission_batches_owner_id_fk' }
       t.string :allowed_contribution_type, null: false,
         index: true

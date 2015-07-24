@@ -2,10 +2,8 @@ class CreateContributions < ActiveRecord::Migration
   def change
     create_table :contributions do |t|
       t.integer :owner_id, null: false,
-        index: true,
         foreign_key: { column: :owner_id, name: 'contributions_owner_id_fk' }
       t.belongs_to :file_upload,
-        index: true,
         foreign_key: { on_delete: :nullify }
       t.belongs_to :submission_batch,
         index: true,

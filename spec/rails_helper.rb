@@ -13,6 +13,7 @@ WebMock.disable_net_connect!(allow_localhost: true)
 Dir[Rails.root.join("spec/support/rails_helpers/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
+
   config.mock_with :rspec do |mocks|
     mocks.verify_doubled_constant_names = true
   end
@@ -48,6 +49,7 @@ RSpec.configure do |config|
   config.include Webmock::Isolation, type: :request
   config.include ShowErrors, type: :request
   config.include Authentication, type: :request
+  config.include Authorization, type: :request
   config.include JSON::Response, type: :request
   config.include Rack::Matchers, type: :request
 end

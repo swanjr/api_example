@@ -1,5 +1,6 @@
 class API::V2::HealthCheckController < API::BaseController
   skip_before_action :restrict_access, only: [:show]
+  before_action :skip_authorization, only: [:show]
 
   def show
     render json: run_diagnostics

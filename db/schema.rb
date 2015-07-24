@@ -29,11 +29,10 @@ ActiveRecord::Schema.define(version: 20150616125453) do
     t.datetime "updated_at",                      null: false
   end
 
-  add_index "contributions", ["file_upload_id"], name: "index_contributions_on_file_upload_id", using: :btree
+  add_index "contributions", ["file_upload_id"], name: "fk_rails_f5c2a36def", using: :btree
   add_index "contributions", ["istock_master_id"], name: "index_contributions_on_istock_master_id", using: :btree
   add_index "contributions", ["master_id"], name: "index_contributions_on_master_id", using: :btree
   add_index "contributions", ["media_type", "media_id"], name: "index_contributions_on_media_type_and_media_id", using: :btree
-  add_index "contributions", ["owner_id"], name: "index_contributions_on_owner_id", using: :btree
   add_index "contributions", ["status"], name: "index_contributions_on_status", using: :btree
   add_index "contributions", ["submission_batch_id"], name: "index_contributions_on_submission_batch_id", using: :btree
   add_index "contributions", ["submitted_at"], name: "index_contributions_on_submitted_at", using: :btree
@@ -53,13 +52,37 @@ ActiveRecord::Schema.define(version: 20150616125453) do
 
   add_index "file_uploads", ["upload_id"], name: "index_file_uploads_on_upload_id", using: :btree
 
-  create_table "roles", force: :cascade do |t|
+  create_table "group_permissions", id: false, force: :cascade do |t|
+    t.integer "group_id",      limit: 4, null: false
+    t.integer "permission_id", limit: 4, null: false
+  end
+
+  add_index "group_permissions", ["group_id", "permission_id"], name: "index_group_permissions_on_group_id_and_permission_id", unique: true, using: :btree
+  add_index "group_permissions", ["permission_id"], name: "fk_rails_7605882dbf", using: :btree
+
+  create_table "group_users", id: false, force: :cascade do |t|
+    t.integer "group_id", limit: 4, null: false
+    t.integer "user_id",  limit: 4, null: false
+  end
+
+  add_index "group_users", ["group_id", "user_id"], name: "index_group_users_on_group_id_and_user_id", unique: true, using: :btree
+  add_index "group_users", ["user_id"], name: "fk_rails_1486913327", using: :btree
+
+  create_table "groups", force: :cascade do |t|
     t.string   "name",       limit: 255, null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
-  add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
+  add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
+
+  create_table "permissions", force: :cascade do |t|
+    t.string   "name",       limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "permissions", ["name"], name: "index_permissions_on_name", using: :btree
 
   create_table "submission_batches", force: :cascade do |t|
     t.integer  "owner_id",                       limit: 4,   null: false
@@ -72,7 +95,14 @@ ActiveRecord::Schema.define(version: 20150616125453) do
   end
 
   add_index "submission_batches", ["allowed_contribution_type"], name: "index_submission_batches_on_allowed_contribution_type", using: :btree
-  add_index "submission_batches", ["owner_id"], name: "index_submission_batches_on_owner_id", using: :btree
+
+  create_table "user_permissions", id: false, force: :cascade do |t|
+    t.integer "user_id",       limit: 4, null: false
+    t.integer "permission_id", limit: 4, null: false
+  end
+
+  add_index "user_permissions", ["permission_id"], name: "fk_rails_e2cb0687d2", using: :btree
+  add_index "user_permissions", ["user_id", "permission_id"], name: "index_user_permissions_on_user_id_and_permission_id", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "username",              limit: 255,                 null: false
@@ -89,16 +119,12 @@ ActiveRecord::Schema.define(version: 20150616125453) do
   add_index "users", ["enabled"], name: "index_users_on_enabled", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
 
-  create_table "users_roles", force: :cascade do |t|
-    t.integer "user_id", limit: 4, null: false
-    t.integer "role_id", limit: 4, null: false
-  end
-
-  add_index "users_roles", ["role_id"], name: "index_users_roles_on_role_id", using: :btree
-  add_index "users_roles", ["user_id"], name: "index_users_roles_on_user_id", using: :btree
-
   add_foreign_key "contributions", "file_uploads", on_delete: :nullify
   add_foreign_key "contributions", "submission_batches", on_delete: :nullify
-  add_foreign_key "users_roles", "roles", on_delete: :cascade
-  add_foreign_key "users_roles", "users", on_delete: :cascade
+  add_foreign_key "group_permissions", "groups", on_delete: :cascade
+  add_foreign_key "group_permissions", "permissions", on_delete: :cascade
+  add_foreign_key "group_users", "groups", on_delete: :cascade
+  add_foreign_key "group_users", "users", on_delete: :cascade
+  add_foreign_key "user_permissions", "permissions", on_delete: :cascade
+  add_foreign_key "user_permissions", "users", on_delete: :cascade
 end

@@ -16,7 +16,7 @@ describe TokenAuthentication do
   let(:tampered_token) { 'YlGeha7EwdDiNmqnK6tIC78bl82YU80NX1RUzq0BRTxMIT6K77jJTdi4JUnw8vUE5dNgzrT68pP6rxLLOHxoJvqmf+Cq/s8WQ4FBLnDk7AP9XDRH8PhvUuSUMXMTLeCimz1cvCNa8J67JL1KPYf+e+Cy8uq3D8YdsfmExO709BA=|77u/SlZ2R2JQMEJTZHVQeDdlZ1h3TUYKMTAwCjMxNAo0ME1KQkE9PQpBR3E5SXc9PQowCgoxMS4yMi4zMy40NAowCgpBQkNNTmc9Pqo=|3' }
   let(:system_token) { 'j9FKNwFcPNuFPc0jgXlkm47IV+X2XQWMn2iMF7pMw7hURNTCteYjBZGX8eiN6AspEb5d2uviue5mlhyRUoW5vTNIml66ZP9A9Kmm/LPub8L6FzTQO8UngVj14u+Koq1s49tUvMt8PYSEL9KY/D27TQUr9yEJfZ4yAWA4Jzd5knE=|77u/Z2ZYNVpkSHNpTC9FaXpNdFVPeTgKMTUyMAoKV2owc0J3PT0KWWtRc0J3PT0KMAoKCjAKMTUyMAoKMTUyMAowCgo=|3' }
 
-  controller(API::BaseController) do
+  controller(API::MetalController) do
     include TokenAuthentication
 
     def index
