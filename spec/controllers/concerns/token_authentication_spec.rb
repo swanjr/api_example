@@ -77,6 +77,15 @@ describe TokenAuthentication do
         expect(response.cookies['username']).to eq(user.username)
       end
 
+      it "and URI encoded, decode it and parse it again" do
+        token = ActionController::HttpAuthentication::Token.
+          encode_credentials(URI.encode(valid_token), :coordination_id => 'ABCD')
+        request.env['HTTP_AUTHORIZATION'] = token
+
+        get :index, nil, format: :json
+
+        expect(assigns(:current_user)).to be(user)
+      end
     end
 
     context "when no token is provided" do

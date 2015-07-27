@@ -21,13 +21,13 @@ module Webmock
       end
     end
 
-    def isolate
+    def isolated?
       @isolate
     end
 
     # Mock service call if request spec isolation is enabled. Verifies the call was made.
-    def stub_for_isolation(method, url, response_body = '', status = :ok, response_headers = {})
-      if isolate
+    def stub_for_isolation(method, url, response_body = '', status = 200, response_headers = {})
+      if isolated?
         response_hash = {
           body: response_body,
           status: status,
