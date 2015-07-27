@@ -20,6 +20,15 @@ describe ExceptionRenderer, type: :none do
       {'message' => 'Base error', 'occurred_at' => 'now', 'http_status_code' => 600, 'code' => 'internal_server_error'})
   end
 
+  it "converts a recognized rails 404 error to an API not found error" do
+    env = {'action_dispatch.exception' => ActiveRecord::RecordNotFound.new("Record not found")}
+    result = exception_renderer.call(env)
+
+    expect(result[0]).to eq(404)
+    expect(JSON.parse(result[2][0])).to match(
+      {'message' => 'Record not found', 'occurred_at' => 'now', 'http_status_code' => 404, 'code' => 'not_found'})
+  end
+  
   it "converts a recognized rails 4xx error to an API bad request error" do
     env = {'action_dispatch.exception' => ActionDispatch::ParamsParser::ParseError.new("Parsing error", nil)}
     result = exception_renderer.call(env)

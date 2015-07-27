@@ -24,7 +24,10 @@ class ExceptionRenderer
   def convert_exception(exception, env)
     # Check if rails can normally handle this exception
     status = ActionDispatch::ExceptionWrapper.new(env, exception).status_code
-    if status.present? && status.to_s.start_with?('4')
+
+    if status.present? && status.to_s == '404'
+      return API::NotFoundError.new(exception.message)
+    elsif status.present? && status.to_s.start_with?('4')
       return API::BadRequestError.new(exception.message, status)
     else
       # Fall back to 500 error

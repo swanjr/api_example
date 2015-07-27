@@ -95,16 +95,16 @@ namespace :test do
          user = User.find_by(:username => new_user.username)
 
          if user.username == "matt@punchstock.com"
-           #user.add_role(:super_admin)
-           #user.add_role(:needs_getty_creative_video_review)
-           #user.add_role(:needs_getty_editorial_video_review)
-           #user.add_role(:needs_getty_editorial_still_review)
+           Group.find_by(name: :super_admin).add_user(user)
+           Group.find_by(name: :getty_creative_video_uploader_with_review).add_user(user)
+           Group.find_by(name: :getty_editorial_video_uploader_with_review).add_user(user)
+           Group.find_by(name: :getty_editorial_still_uploader_with_review).add_user(user)
          elsif user.username == "gtorn_is_god"
            # we need this user to exist without any roles for workflow tests
-           #user.roles.delete_all
+           user.permissions.delete_all
          else
-           #user.add_role(:getty_creative_video_uploader)
-           #user.add_role(:getty_editorial_video_uploader)
+           Group.find_by(name: :getty_creative_video_uploader_no_review).add_user(user)
+           Group.find_by(name: :getty_editorial_video_uploader_no_review).add_user(user)
          end
        end
      end

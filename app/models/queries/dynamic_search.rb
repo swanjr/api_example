@@ -95,7 +95,7 @@ module Queries
     end
 
     def search_model
-      return @search_model unless @search_model.blank?
+      return @search_model unless @search_model.nil?
 
       raise ArgumentError.new(
         "DynamicSearch was not subclassed so an ActiveRecord model must be provided.")
