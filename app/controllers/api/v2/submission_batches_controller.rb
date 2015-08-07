@@ -10,9 +10,7 @@ class API::V2::SubmissionBatchesController < API::BaseController
       starting_at(offset).
       as_hash
 
-    results = query.search
-
-    render_list results, query.offset, query.total_records
+    render_list query.search, query.offset, query.total_records
   end
 
   def show
