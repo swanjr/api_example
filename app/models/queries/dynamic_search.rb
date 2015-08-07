@@ -19,24 +19,32 @@ module Queries
     # if no customized functionality is needed.
     def initialize(provided_model = nil, limit = nil)
       @search_model = provided_model || search_model
-      @order = "#{qualify_field('id')} asc"
+      @order = [{id: 'asc'}]
       @limit = valid_limit(limit)
       @offset = 0
       @fields = []
       @filters = []
+      @as_hash = false
     end
 
     # Returns the configured search query relation and the total record count.
     def search
       relation = search_model
 
-      relation = relation.select(fields) unless fields.blank?
-      filters.each do |filter|
+      process_filters(filters).each do |filter|
         relation = relation.where(filter[:clause], filter[:value])
       end
 
-      relation = relation.order(order) unless order.blank?
-      relation.limit(limit).offset(offset)
+      relation = relation.order(process_sort_order(order)) unless order.blank?
+      relation = relation.limit(limit).offset(offset)
+
+      if @as_hash
+        results = relation.pluck(process_fields(fields))
+        relation = convert_to_hash(results, fields)
+      else
+        relation = relation.select(process_fields(fields))
+      end
+      relation
     end
 
     # Returns the total records in the database matching the query.
@@ -56,10 +64,8 @@ module Queries
     #    {field: 'name', operator: '=', value: 'john'},
     #    {field: 'id', operator: 'not in', value: [2,3,9]}
     def filter_by(*filters)
-      @filters = []
-
       return self if filters[0].blank?
-      @filters = process_filters(handle_nested_array_arg(filters))
+      @filters = handle_nested_array_arg(filters)
 
       self
     end
@@ -68,10 +74,15 @@ module Queries
     # Only the specified fields are returned in the query results.
     # ex. name, id
     def for_fields(*fields)
-      @fields = []
-
       return self if fields[0].blank?
-      @fields = process_fields(handle_nested_array_arg(fields))
+      @fields = handle_nested_array_arg(fields)
+
+      self
+    end
+
+    # Specifies the data be returned as a array of hashes instead of objects.
+    def as_hash(return_hash = true)
+      @as_hash = return_hash
 
       self
     end
@@ -86,10 +97,8 @@ module Queries
     # they should be applied.
     # ex. {'name' => 'desc'}, {id: 'asc'}
     def sort_by(*sort_order)
-      @order = ''
-
       return self if sort_order[0].blank?
-      @order = process_sort_order(handle_nested_array_arg(sort_order))
+      @order = handle_nested_array_arg(sort_order)
 
       self
     end
@@ -103,15 +112,24 @@ module Queries
 
     protected
 
-    attr_accessor :fields, :filters, :order
-    attr_writer :limit, :offset
+    attr_accessor :filters, :order
+    attr_writer :fields, :limit, :offset
+
+    def fields
+      @fields.blank? ? default_fields : @fields
+    end
+
+    def default_fields
+      search_model.column_names
+    end
 
     def process_fields(fields)
-      fields.each_with_index do |field_name, index|
+      qualified_fields = []
+      fields.each do |field_name|
         check_field(field_name)
-        fields[index] = qualify_field(field_name)
+        qualified_fields << qualify_field(field_name)
       end
-      fields.compact.join(', ')
+      qualified_fields.compact.join(', ')
     end
 
     def process_filters(filters)
@@ -201,6 +219,10 @@ module Queries
     def check_field(field_name)
       raise InvalidFieldError.new("Unrecognized field '#{field_name}'") unless
       valid_field?(field_name)
+    end
+
+    def convert_to_hash(results, columns)
+      results.map{ |r| Hash[ *columns.zip(r).flatten ] }
     end
   end
 end

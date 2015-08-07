@@ -177,13 +177,6 @@ describe Queries::DynamicSearch do
       expect{query.filter_by(filter).search}.to raise_error(Queries::InvalidOperatorError)
     end
 
-    it "calls qualify_field on the field name" do
-      expect(query).to receive(:qualify_field).with('id')
-
-      filter = { field: 'id', operator: '=', value: 1 }
-      query.filter_by(filter).search
-    end
-
     it "skips filtering behavior if input is nil or empty" do
       results = query.filter_by(nil).search
       expect(results.length).to be(5)
@@ -203,12 +196,6 @@ describe Queries::DynamicSearch do
 
     it "raises an error if the field name is unknown" do
       expect{query.for_fields('bad_field_name').search}.to raise_error(Queries::InvalidFieldError)
-    end
-
-    it "calls qualify_field on the field name" do
-      expect(query).to receive(:qualify_field).with('id')
-
-      query.for_fields('id').search
     end
 
     it "skips fields behavior if input is nil or empty" do
@@ -255,12 +242,6 @@ describe Queries::DynamicSearch do
     it "sorts a field according to the provided order" do
       results = query.sort_by('id' => 'desc').search
       expect(results.first.id).to eql(records.last.id)
-    end
-
-    it "calls qualify_field on the field name" do
-      expect(query).to receive(:qualify_field).with('id')
-
-      query.sort_by(id: 'desc').search
     end
 
     it "skips sorting behavior if input is nil or empty" do

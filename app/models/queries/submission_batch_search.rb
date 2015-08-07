@@ -7,6 +7,10 @@ module Queries
 
     protected
 
+    def default_fields
+      super + ['owner_username']
+    end
+
     def process_fields(fields)
       fields << 'owner_id' if fields.to_s.include?('owner_username')
       super(fields)

@@ -34,6 +34,15 @@ describe Queries::SubmissionBatchSearch do
     end
   end
 
+  describe "#search" do
+    it "returns the owner_username field for a basic search" do
+      results = query.as_hash.search
+
+      expect(results.length).to be(2)
+      expect(results[0]["owner_username"]).to eql('johndoe0')
+    end
+  end
+
   describe "#filter_by" do
     it "can filter by owner_username" do
       filter = { field: 'owner_username', operator: '=', value: 'johndoe1' }

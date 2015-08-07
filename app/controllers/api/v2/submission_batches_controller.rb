@@ -7,11 +7,12 @@ class API::V2::SubmissionBatchesController < API::BaseController
       for_fields(fields).
       filter_by(filters).
       sort_by(sort_order).
-      starting_at(offset)
+      starting_at(offset).
+      as_hash
 
-    results = query.search.extend(SubmissionBatchRepresenter.for_collection)
+    results = query.search
 
-    render_models results, query.offset, query.total_records
+    render_list results, query.offset, query.total_records
   end
 
   def show

@@ -44,12 +44,12 @@ describe ModelRendering do
     end
   end
 
-  describe "#render_models" do
+  describe "#render_list" do
     it "renders the json representation of the models with counts" do
       #Mock to_hash method on array
-      model_list = [model, model]
+      model_list = []
       def model_list.to_hash
-        [{field_name: 'data'}]
+        [{field_name: 'data'}, {field_name: 'data'}]
       end
 
       json_response = {
@@ -60,7 +60,21 @@ describe ModelRendering do
       }
       expect(controller).to receive(:render).with(json: json_response, status: :fake_status)
 
-      controller.render_models(model_list, 1, 5, :fake_status)
+      controller.render_list(model_list, 1, 5, :fake_status)
+    end
+
+    it "renders the json representation of the hashes with counts" do
+      model_list = [{}, {}]
+
+      json_response = {
+        items: model_list,
+        item_count: 2,
+        offset: 1,
+        total_items: 5
+      }
+      expect(controller).to receive(:render).with(json: json_response, status: :fake_status)
+
+      controller.render_list(model_list, 1, 5, :fake_status)
     end
   end
 end

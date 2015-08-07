@@ -9,10 +9,13 @@ module ModelRendering
     end
   end
 
-  def render_models(model_list, offset, total_items = nil, status = :ok)
+  def render_list(items, offset, total_items = nil, status = :ok)
+    # Invoke serializer to_hash method if items are models
+    items = items.to_hash unless items[0].is_a?(Hash)
+
     json = {
-      items: model_list.to_hash,
-      item_count: model_list.size,
+      items: items,
+      item_count: items.size,
       offset: offset
     }
     json[:total_items] = total_items if total_items.present?
