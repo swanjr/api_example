@@ -85,13 +85,17 @@ ActiveRecord::Schema.define(version: 20150616125453) do
   add_index "permissions", ["name"], name: "index_permissions_on_name", using: :btree
 
   create_table "submission_batches", force: :cascade do |t|
-    t.integer  "owner_id",                       limit: 4,   null: false
-    t.string   "allowed_contribution_type",      limit: 255, null: false
-    t.string   "name",                           limit: 255, null: false
-    t.string   "status",                         limit: 255, null: false
+    t.integer  "owner_id",                       limit: 4,                  null: false
+    t.string   "allowed_contribution_type",      limit: 255,                null: false
+    t.string   "name",                           limit: 255,                null: false
+    t.string   "status",                         limit: 255,                null: false
     t.datetime "last_contribution_submitted_at"
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.boolean  "apply_extracted_metadata",       limit: 1,   default: true
+    t.string   "event_id",                       limit: 255
+    t.string   "brief_id",                       limit: 255
+    t.string   "assignment_id",                  limit: 255
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
   end
 
   add_index "submission_batches", ["allowed_contribution_type"], name: "index_submission_batches_on_allowed_contribution_type", using: :btree

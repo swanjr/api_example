@@ -17,43 +17,48 @@ describe SubmissionBatchRepresenter do
       owner: owner,
       allowed_contribution_type: 'getty_creative_video',
       status: 'open',
+      event_id: '12345678',
+      brief_id: 'AB1234',
+      assignment_id: '1234',
       created_at: 2.days.ago,
       updated_at: 5.days.ago
     } }
 
+    let(:expected_output) { {
+      'id' => 1,
+      'owner_id' => data[:owner_id],
+      'owner_username' => data[:owner].username,
+      'name' => data[:name],
+      'allowed_contribution_type' => data[:allowed_contribution_type],
+      'status' => data[:status],
+      'event_id' => data[:event_id],
+      'brief_id' => data[:brief_id],
+      'assignment_id' => data[:assignment_id],
+      'apply_extracted_metadata' => true,
+      'created_at' => data[:created_at],
+      'updated_at' => data[:updated_at]
+    } }
+
     it "returns valid json for the SubmissionBatch" do
-      expected_output = {
-        'id' => 1,
-        'owner_id' => data[:owner_id],
-        'owner_username' => data[:owner].username,
-        'name' => data[:name],
-        'allowed_contribution_type' => data[:allowed_contribution_type],
-        'status' => data[:status],
-        'created_at' => data[:created_at],
-        'updated_at' => data[:updated_at]
-      }
       submission = SubmissionBatch.new(data).extend(described_class)
       expect(submission).to eq_json(expected_output)
     end
 
     it "returns valid json for a collection of submission batches" do
-      submission1 = SubmissionBatch.create!(name: 'Test Batch 1',
-                              allowed_contribution_type: 'getty_creative_video',
-                              owner: owner,
-                              status: 'open')
-      submission2 = SubmissionBatch.create!(name: 'Test Batch 2`',
-                              allowed_contribution_type: 'getty_creative_video',
-                              owner: owner,
-                              status: 'open')
-      expected_output = [
-        { id: submission1.id}, {id: submission2.id}
+      submission1 = SubmissionBatch.new(data)
+      submission2 = SubmissionBatch.new(data)
+
+      # Make submissions differ slightly
+      submission2.id = 2
+      expected_output2 = expected_output.clone
+      expected_output2[:id] = 2
+
+      expected_collection = [
+        expected_output, expected_output2
       ]
 
-      # Using select, also implicitly tests serializing SubmissionBatch objects
-      # that have a subset of the full attributes.
-      submission = SubmissionBatch.select(:id).extend(described_class.for_collection)
-
-      expect(submission).to eq_json(expected_output)
+      submissions = [submission1, submission2].extend(described_class.for_collection)
+      expect(submissions).to eq_json(expected_collection)
     end
   end
 
@@ -103,12 +108,15 @@ describe SubmissionBatchRepresenter do
       let(:existing_data) { {
         owner_id: 1,
         name: 'My Batch',
-        allowed_contribution_type: 'getty_creative_video'
+        allowed_contribution_type: 'getty_creative_video',
+        apply_extracted_metadata: true,
+        contributions: []
       } }
       let(:new_data) { {
         owner_id: 100,
         name: 'Not My Batch',
-        allowed_contribution_type: 'istock_creative_video'
+        allowed_contribution_type: 'istock_creative_video',
+        apply_extracted_metadata: false
       } }
       let(:submission) { OpenStruct.new(existing_data).extend(described_class) }
 
@@ -116,12 +124,16 @@ describe SubmissionBatchRepresenter do
         submission.from_json(new_data.to_json, owner_id: 99)
       end
 
-      it "cannot override the owner_id" do
+      it "cannot override owner_id" do
         expect(submission.owner_id).to eq(existing_data[:owner_id])
       end
 
-      it "cannot override the allowed_contribution_type" do
+      it "cannot override allowed_contribution_type" do
         expect(submission.allowed_contribution_type).to eq(existing_data[:allowed_contribution_type])
+      end
+
+      it "cannot override apply_extracted_metadata if there are contributions" do
+        expect(submission.apply_extracted_metadata).to eq(existing_data[:apply_extracted_metadata])
       end
     end
   end

@@ -4,7 +4,6 @@ module SubmissionBatchRepresenter
   property :id
 
   property :owner_id,
-    if: lambda { |args| field_exists?(:owner_id) },
     writeable: false
 
   property :owner_username,
@@ -12,23 +11,27 @@ module SubmissionBatchRepresenter
     writeable: false,
     getter: :owner_username
 
-  property :name,
-   if: lambda { |args| field_exists?(:name) }
+  property :name
 
   property :allowed_contribution_type,
-    if: lambda { |args| field_exists?(:name) },
     skip_parse: lambda { |fragment, options| allowed_contribution_type.present? }
 
   property :status,
-    if: lambda { |args| field_exists?(:status) },
     writeable: false
 
+  property :event_id
+
+  property :brief_id
+
+  property :assignment_id
+
+  property :apply_extracted_metadata,
+    skip_parse: lambda { |fragment, options| contributions.empty? }
+
   property :created_at,
-    if: lambda { |args| field_exists?(:created_at) },
     writeable: false
 
   property :updated_at,
-    if: lambda { |args| field_exists?(:updated_at) },
     writeable: false
 
   private

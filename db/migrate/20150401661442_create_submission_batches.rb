@@ -8,6 +8,10 @@ class CreateSubmissionBatches < ActiveRecord::Migration
       t.string :name, null: false
       t.string :status, null: false
       t.datetime :last_contribution_submitted_at
+      t.boolean :apply_extracted_metadata, default: true
+      t.string :event_id
+      t.string :brief_id
+      t.string :assignment_id
       t.timestamps null: false
     end
   end

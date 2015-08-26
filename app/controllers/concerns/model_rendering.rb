@@ -9,7 +9,7 @@ module ModelRendering
     end
   end
 
-  def render_list(items, offset, total_items = nil, status = :ok)
+  def render_collection(items, offset, total_items = nil, status = :ok)
     # Invoke serializer to_hash method if items are models
     items = items.to_hash unless items[0].is_a?(Hash)
 
