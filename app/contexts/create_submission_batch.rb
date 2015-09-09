@@ -18,9 +18,9 @@ class CreateSubmissionBatch
   private
 
   module Uploader
-
     def create_submission_batch(submission_batch)
       submission_batch.name = "Submission date: #{Date.current}" if submission_batch.name.blank?
+      submission_batch.allowed_contribution_type.try(:downcase!)
       submission_batch.status = 'open'
       submission_batch.owner = self
       submission_batch.save

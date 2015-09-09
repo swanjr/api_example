@@ -1,8 +1,9 @@
 require 'active_record_helper'
 
-require 'models/user'
 require 'models/group'
 require 'models/permission'
+
+require 'models/user'
 
 describe User do
 

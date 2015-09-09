@@ -4,6 +4,7 @@ require 'contexts/create_submission_batch'
 
 require 'models/user'
 require 'models/contribution'
+require 'models/validators/blank_validator'
 require 'models/submission_batch'
 
 describe CreateSubmissionBatch do

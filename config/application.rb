@@ -32,6 +32,7 @@ module EspAPI
     # Load added directories
     #config.autoload_paths += %W(#{config.root}/app/commands)
     config.autoload_paths += %W(#{config.root}/app/contexts)
+    config.autoload_paths += %W(#{config.root}/app/models/validators)
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += %W(#{config.root}/middleware)
 
