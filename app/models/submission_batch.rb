@@ -25,13 +25,13 @@ class SubmissionBatch < ActiveRecord::Base
       message: 'ID cannot be set if event ID has already been specified' },
     allow_blank: true
   validates :brief_id, blank: { if: :getty_editorial?,
-    message: 'cannot be assigned to Getty Editorial submissions' }
+    message: 'ID cannot be assigned to Getty Editorial submissions' }
   validates :brief_id, blank: { if: :istock?,
-    message: 'cannot be assigned to iStock submission batches' }
+    message: 'ID cannot be assigned to iStock submission batches' }
   validates :assignment_id, blank: { if: :getty_creative?,
-    message: 'cannot be assigned to Getty Creative submission batches' }
+    message: 'ID cannot be assigned to Getty Creative submission batches' }
   validates :assignment_id, blank: { if: :istock?,
-    message: 'cannot be assigned to iStock submission batches' }
+    message: 'ID cannot be assigned to iStock submission batches' }
 
   def self.statuses
     STATUSES

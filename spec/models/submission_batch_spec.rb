@@ -27,7 +27,7 @@ describe SubmissionBatch do
     it { is_expected.to allow_value('ABSD123','12345666').
          for(:brief_id) }
     it { is_expected.to_not allow_value('ABS D123', ' 12345666', '234sdfsdf ').
-         for(:brief_id) }
+         for(:brief_id).with_message('ID must not contain spaces') }
     it { is_expected.to validate_length_of(:brief_id).is_at_most(20) }
 
     it "should ensure brief_id is blank when event_id is set" do
@@ -43,7 +43,7 @@ describe SubmissionBatch do
                                        brief_id: 'ABC1234')
 
       expect(submission.valid?).to be(false)
-      expect(submission.errors[:brief_id]).to include(/to Getty Editorial/)
+      expect(submission.errors[:brief_id]).to include(/ID cannot be assigned to Getty Editorial/)
     end
 
     it "should ensure brief_id is blank for iStock batches" do
@@ -51,7 +51,7 @@ describe SubmissionBatch do
                                        brief_id: 'ABC1234')
 
       expect(submission.valid?).to be(false)
-      expect(submission.errors[:brief_id]).to include(/to iStock/)
+      expect(submission.errors[:brief_id]).to include(/ID cannot be assigned to iStock/)
     end
 
     it "should ensure assignment_id is blank for Getty Creative batches" do
@@ -59,7 +59,7 @@ describe SubmissionBatch do
                                        assignment_id: 'ABC1234')
 
       expect(submission.valid?).to be(false)
-      expect(submission.errors[:assignment_id]).to include(/to Getty Creative/)
+      expect(submission.errors[:assignment_id]).to include(/ID cannot be assigned to Getty Creative/)
     end
 
     it "should ensure assignment_id is blank for iStock batches" do
@@ -67,7 +67,7 @@ describe SubmissionBatch do
                                        assignment_id: 'ABC1234')
 
       expect(submission.valid?).to be(false)
-      expect(submission.errors[:assignment_id]).to include(/to iStock/)
+      expect(submission.errors[:assignment_id]).to include(/ID cannot be assigned to iStock/)
     end
   end
 

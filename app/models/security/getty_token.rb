@@ -36,7 +36,6 @@ module Security
       getty_token
     end
 
-
     def initialize(token, allow_system_token = false)
       originating_token, caller_token = separate_tokens(token)
 
