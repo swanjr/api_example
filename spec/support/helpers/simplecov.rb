@@ -1,9 +1,4 @@
-# Example configuration in rails_helper.rb
-#
-# config.include Simplecov, type: :request
-#
-# A type of :request means this will only be run for request specs or 
-# when the entire suite is run.
+# Enabled for all specs.
 module Simplecov
 
   RSpec.configure do |config|

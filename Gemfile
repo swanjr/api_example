@@ -28,6 +28,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'database_cleaner'
   gem 'shoulda-matchers', '~> 2.8.0'
   #gem 'psych', '>= 2.0.5'
   gem 'webmock'

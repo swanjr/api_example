@@ -12,6 +12,7 @@ describe Queries::DynamicSearch do
   # Create records once for all examples since they are read only
   before(:context) do
     @records = []
+    puts User.all.inspect
     for x in 0..4
       @records << User.create!(username: "johndoe#{x}",
                                email: "jd#{x}@email.com",

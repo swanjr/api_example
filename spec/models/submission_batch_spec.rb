@@ -1,8 +1,8 @@
 require 'active_record_helper'
 
 require 'models/user'
-require 'models/contribution'
 require 'models/validators/blank_validator'
+require 'models/contribution'
 
 require 'models/submission_batch'
 

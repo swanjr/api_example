@@ -3,6 +3,7 @@ require 'active_record_helper'
 require 'models/queries/dynamic_search'
 require 'models/contribution'
 require 'models/user'
+require 'models/validators/blank_validator'
 require 'models/submission_batch'
 
 require 'models/queries/submission_batch_search'
@@ -29,8 +30,8 @@ describe Queries::SubmissionBatchSearch do
   # Destroy created records
   after(:context) do
     @records.each do |record|
-      record.owner.destroy!
       record.destroy!
+      record.owner.destroy!
     end
   end
 

@@ -1,6 +1,6 @@
-class CreateFileUploads < ActiveRecord::Migration
+class CreateFileInfo < ActiveRecord::Migration
   def change
-    create_table :file_uploads do |t|
+    create_table :file_info do |t|
       t.string :name, null: false
       t.string :path
       t.string :upload_bucket

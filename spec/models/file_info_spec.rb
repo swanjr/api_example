@@ -1,8 +1,8 @@
 require 'active_record_helper'
 
-require 'models/file_upload'
+require 'models/file_info'
 
-describe FileUpload do
+describe FileInfo do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }

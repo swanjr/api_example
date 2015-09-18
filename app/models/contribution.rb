@@ -9,11 +9,11 @@ class Contribution < ActiveRecord::Base
   private_constant :STATUSES
 
   belongs_to :owner, foreign_key: :owner_id, class_name: 'User'
-  belongs_to :file_upload
+  belongs_to :file_info
   belongs_to :media, polymorphic: true
 
   validates :owner_id, presence: true
-  validates :file_upload_id, presence: true
+  validates :file_info_id, presence: true
   validates :media_id, presence: true
   validates :media_type, presence: true
   validates :status, inclusion: { in: STATUSES,

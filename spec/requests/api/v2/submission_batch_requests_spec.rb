@@ -148,10 +148,11 @@ describe "SubmissionBatches API V2" do
       owner_id: '-1',
       allowed_contribution_type: 'istock_creative_video'
     } }
-    let(:submission) { FactoryGirl.create(:submission_batch) }
+    let(:submission) { FactoryGirl.create(:submission_batch, owner: owner) }
 
     context 'with valid data' do
       it "returns the updated submission" do
+        puts owner.inspect
         put api_v2_submission_batch_path(submission.id),
           submission_attrs.to_json, http_authorization_header
 
